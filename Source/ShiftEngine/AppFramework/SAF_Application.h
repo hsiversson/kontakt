@@ -8,15 +8,24 @@ enum class SAF_ReturnCode
     Restart,
 };
 
+enum class SAF_ApplicationPlatform
+{
+    Windows,
+    Linux
+};
+
 class SAF_Application
 {
 public:
+    static SAF_Application* Create(const SAF_ApplicationPlatform& aPlatform);
+    
+public:
     SAF_Application();
-    ~SAF_Application();
+    virtual ~SAF_Application();
 
-    bool Init();
+    virtual bool Init();
 
-    SAF_ReturnCode Run();
+    virtual SAF_ReturnCode Run();
 
 private:
 };

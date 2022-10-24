@@ -5,6 +5,8 @@
 
 static constexpr const wchar_t* gWindowClassName = L"ShiftEngineWindowClassId";
 
+static LRESULT CALLBACK	SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPARAM);
+
 static bool RegisterWindowClass()
 {
     static bool initialized = false;
@@ -15,7 +17,7 @@ static bool RegisterWindowClass()
     WNDCLASSEX wcex = {};
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = SAF_WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = GetModuleHandle(NULL);
@@ -65,6 +67,19 @@ bool SAF_Window_Win64::Init()
 	);
 
     return true;
+}
+
+LRESULT CALLBACK SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPARAM)
+{
+	switch(aMsg)
+	{
+	case WM_ENTERSIZEMOVE:
+		return 0;
+	case WM_EXITSIZEMOVE:
+		return 0;
+	default:
+		return DefWindowProcW(aHwnd, aMsg, aWPARAM, aLPARAM);
+	}
 }
 
 #endif
