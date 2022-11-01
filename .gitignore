@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+./.vs/
+./Source/build_intermediate
+./Source/build_output
+./Source/build_temp
+*.vcxproj
+*.user
+*.filter
+
