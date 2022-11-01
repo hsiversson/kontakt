@@ -14,7 +14,6 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Fortran module files
 *.mod
@@ -24,18 +23,17 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
-*.exe
 *.out
 *.app
 
-./.vs/
-./Source/build_intermediate
-./Source/build_output
-./Source/build_temp
+/.vs/
+/Source/build_intermediate
+/Source/build_output
+/Source/build_temp
 *.vcxproj
 *.user
-*.filter
+*.filters
+*.sln
 
