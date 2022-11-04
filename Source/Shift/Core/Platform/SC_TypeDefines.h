@@ -42,6 +42,8 @@ static constexpr float SC_FLT_LOWEST = -SC_FLT_MAX;
 
 static constexpr float SC_FLT_SMALL_NUMBER = 1.e-4f;
 
+static constexpr float SC_PI = 3.1415926535897932f;
+
 #define KB(Num) ((Num) * 1024)
 #define MB(Num) ((Num) * (1024 * 1024))
 #define GB(Num) ((Num) * (1024*1024*1024ull))

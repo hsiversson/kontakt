@@ -7,7 +7,7 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxguid.lib")
 
-#if ENABLE_PIX
+#if SR_ENABLE_PIX
 	#define USE_PIX (1)
 
 	#if !IS_RETAIL_BUILD
@@ -16,7 +16,7 @@
 
 	#pragma warning(push)
 	#pragma warning(disable:6101)
-	#include "WinPixEventRuntime/pix3.h"
+	//#include "WinPixEventRuntime/pix3.h"
 	#pragma warning(pop)
 #endif
 

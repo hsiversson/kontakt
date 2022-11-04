@@ -162,7 +162,10 @@ namespace Shift
 
         public static DevEnv GetDefaultDevEnvironment()
         {
-            return DevEnv.vs2022;
+            if (IsVisualStudio22Available)
+                return DevEnv.vs2022;
+            else
+                return DevEnv.vs2019;
         }
 
         public static BuildConfiguration GetDefaultBuildConfiguration()

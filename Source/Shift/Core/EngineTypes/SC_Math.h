@@ -1,5 +1,8 @@
 //ProjectFilter(Math)
 #pragma once
+#include "SC_TypeDefines.h"
+#include <cmath>
+#include <cfloat>
 
 template <class Type1, class Type2>
 inline Type1 SC_Min(const Type1& aFirst, const Type2& aSecond)
@@ -50,6 +53,43 @@ inline Type SC_Lerp(const Type& aA, const Type& aB, const Type& aT)
 	return aA + aT * (aB - aA);
 }
 
-// Float Operations
+template<class T>
+inline auto RadiansToDegrees(T const& aRadVal) -> decltype(aRadVal* (180.f / SC_PI))
+{
+	return aRadVal * (180.f / PI);
+}
 
-inline 
+/* Converts degrees to radians. */
+template<class T>
+inline auto DegreesToRadians(T const& aDegVal) -> decltype(aDegVal* (SC_PI / 180.f))
+{
+	return aDegVal * (PI / 180.f);
+}
+
+template <typename T>
+inline int Sign(T aValue)
+{
+	return (T(0) < aValue) - (aValue < T(0));
+}
+
+// Float Operations
+inline float SC_Abs(float aVal)				{ return fabsf(aVal); }
+inline float SC_Floor(float aVal)			{ return floorf(aVal); }
+inline float SC_Ceil(float aVal)			{ return ceilf(aVal); }
+inline float SC_Round(float aVal)			{ return roundf(aVal); }
+inline float SC_Frac(float aVal)			{ float intPart = 0; return modf(aVal, &intPart); }
+inline float SC_Sin(float aVal)				{ return sinf(aVal); }
+inline float SC_Asin(float aVal)			{ return asinf(aVal); }
+inline float SC_Cos(float aVal)				{ return cosf(aVal); }
+inline float SC_Acos(float aVal)			{ return acosf(aVal); }
+inline float SC_Tan(float aVal)				{ return tanf(aVal); }
+inline float SC_Atan(float aVal)			{ return atanf(aVal); }
+inline float SC_Atan2(float aY, float aX)	{ return atan2f(aY, aX); }
+inline float SC_Sqrt(float aVal)			{ return sqrtf(aVal); }
+inline float SC_InvSqrt(float aVal)			{ return 1.0f / sqrtf(aVal); }
+inline float SC_Square(float aVal)			{ return aVal * aVal; }
+inline float SC_Log(float aVal)				{ return logf(aVal); }
+inline float SC_Log2(float aVal)			{ return log2f(aVal); }
+inline float SC_Pow(float aVal, float aExp)	{ return powf(aVal, aExp); }
+inline float SC_Exp(float aVal)				{ return expf(aVal); }
+inline float SC_Exp2(float aVal)			{ return exp2f(aVal); }

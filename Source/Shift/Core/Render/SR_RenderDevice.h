@@ -10,12 +10,15 @@ public:
     SR_RenderDevice();
     virtual ~SR_RenderDevice();
 
-    virtual bool Init();
+    virtual bool Init() = 0;
 
-    SC_Ref<SR_TextureResource> CreateBufferResource();
+    SC_Ref<SR_TextureResource> CreateTextureResource();
     SC_Ref<SR_Texture> CreateTexture();
 
     SC_Ref<SR_BufferResource> CreateBufferResource();
     SC_Ref<SR_BufferView> CreateBufferView();
-private:
+
+protected:
+    bool mEnableDebugMode;
+    bool mEnableBreakOnError;
 };

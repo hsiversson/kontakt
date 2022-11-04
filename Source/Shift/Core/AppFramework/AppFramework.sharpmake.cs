@@ -19,6 +19,8 @@ namespace Shift.Core
 
             aConfig.PrecompHeader = "AppFramework_Precompiled.h";
             aConfig.PrecompSource = "AppFramework_Precompiled.cpp";
+
+            aConfig.AddPublicDependency<Shift.Core.CommonProject>(aTarget);
         }
     }
 }
