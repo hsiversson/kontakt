@@ -3,18 +3,23 @@
 
 #if IS_WINDOWS_PLATFORM
 
+class SR_SwapChain;
 class SAF_Window_Win64
 {
+    friend class SAF_Application_Win64;
 public:
     SAF_Window_Win64();
     ~SAF_Window_Win64();
 
     bool Init(void* aParentWindowHandle = nullptr);
 
+    HWND GetHandle() const;
+
 private:
     void PostMessageToMainThread(uint32 aMsg, WPARAM aWPARAM, LPARAM aLPARAM);
 
 	HWND mWindowHandle;
+	SC_Ref<SR_SwapChain> mSwapChain;
 };
 
 #endif

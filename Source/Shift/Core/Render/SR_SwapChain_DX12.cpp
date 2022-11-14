@@ -84,8 +84,6 @@ bool SR_SwapChain_DX12::CreateSwapChain()
 	desc.Stereo = false;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	if (!mProperties.mFullscreen)
-		desc.Flags |= DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
 	if (!allowTearing)
 		desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 

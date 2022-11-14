@@ -2,16 +2,21 @@
 #include "Render_Precompiled.h"
 #include "SR_RenderDevice.h"
 
+#if SR_ENABLE_DX12
+#include "SR_RenderDevice_DX12.h"
+#endif
+#if SR_ENABLE_VULKAN
+#include "SR_RenderDevice_Vk.h"
+#endif
+
 SR_RenderDevice* SR_RenderDevice::gInstance = nullptr;
 
 SR_RenderDevice::SR_RenderDevice()
 {
-	gInstance = this;
 }
 
 SR_RenderDevice::~SR_RenderDevice()
 {
-	gInstance = nullptr;
 }
 
 SC_Ref<SR_TextureResource> SR_RenderDevice::CreateTextureResource(const SR_TextureResourceProperties& /*aTextureResourceProperties*/, const SR_PixelData* /*aInitialData*/, uint32 /*aDataCount*/)
@@ -60,4 +65,59 @@ SR_DescriptorHeap* SR_RenderDevice::GetDescriptorHeap(const SR_DescriptorType& /
 {
 	SC_ASSERT(false, "Not Implemented Yet!");
 	return nullptr;
+}
+
+SC_Ref<SR_SwapChain> SR_RenderDevice::CreateSwapChain(const SR_SwapChainProperties& /*aProperties*/, void* /*aNativeWindowHandle*/)
+{
+	SC_ASSERT(false, "Not Implemented Yet!");
+	return nullptr;
+}
+
+const SR_API& SR_RenderDevice::GetAPI() const
+{
+	return mRenderApi;
+}
+
+bool SR_RenderDevice::Create(const SR_API& aAPIType)
+{
+	if (gInstance)
+	{
+		SC_ASSERT(false, "RenderDevice can only be created once!");
+		return false;
+	}
+
+	switch (aAPIType)
+	{
+#if SR_ENABLE_DX12
+	case SR_API::D3D12:
+		gInstance = new SR_RenderDevice_DX12();
+		break;
+#endif
+#if SR_ENABLE_VULKAN
+	case SR_API::Vulkan:
+		gInstance = new SR_RenderDevice_Vk();
+		break;
+#endif
+	case SR_API::Unknown:
+	default:
+		SC_ASSERT(false, "Invalid render API.");
+		return false;
+	}
+
+	if (!gInstance->Init())
+	{
+		SC_ASSERT(false, "Couldn't initialize render api.");
+		return false;
+	}
+
+	return true;
+}
+
+void SR_RenderDevice::Destroy()
+{
+	if (gInstance == nullptr)
+		return;
+
+	delete gInstance;
+	gInstance = nullptr;
 }

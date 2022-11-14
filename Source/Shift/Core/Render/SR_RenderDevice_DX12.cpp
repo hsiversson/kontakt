@@ -5,14 +5,17 @@
 #include "SR_RenderDevice_DX12.h"
 #include "SR_TextureResource_DX12.h"
 #include "SR_Texture_DX12.h"
+#include "SR_SwapChain_DX12.h"
 
 extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 606; }
-extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = ".\\D3D12\\"; }
+extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = "./"; }
 
 SR_RenderDevice_DX12* SR_RenderDevice_DX12::gInstance = nullptr;
 
 SR_RenderDevice_DX12::SR_RenderDevice_DX12()
 {
+	mRenderApi = SR_API::D3D12;
+
 	gInstance = this;
 }
 
@@ -143,6 +146,16 @@ SR_DescriptorHeap* SR_RenderDevice_DX12::GetDescriptorHeap(const SR_DescriptorTy
 	default:
 		return nullptr;
 	}
+}
+
+SC_Ref<SR_SwapChain> SR_RenderDevice_DX12::CreateSwapChain(const SR_SwapChainProperties& aProperties, void* aNativeWindowHandle)
+{
+	SC_Ref<SR_SwapChain_DX12> newSwapChain = new SR_SwapChain_DX12();
+
+	if (!newSwapChain->Init(aProperties, aNativeWindowHandle))
+		return nullptr;
+
+	return newSwapChain;
 }
 
 ID3D12Device* SR_RenderDevice_DX12::GetD3D12Device() const

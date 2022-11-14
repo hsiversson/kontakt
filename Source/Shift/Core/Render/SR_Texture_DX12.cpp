@@ -100,7 +100,7 @@ bool SR_Texture_DX12::InitSRV()
 	}
 
 	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::SRV)->Alloc();
-	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateShaderResourceView(mDX12Resource->mD3D12Resource.Get(), &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
+	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateShaderResourceView(mDX12Resource->mD3D12Resource, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[static_cast<uint32>(SR_TextureBindType::Texture)] = descriptor;
 	return true;
 }
@@ -155,7 +155,7 @@ bool SR_Texture_DX12::InitUAV()
 	}
 
 	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::UAV)->Alloc();
-	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateUnorderedAccessView(mDX12Resource->mD3D12Resource.Get(), nullptr, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
+	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateUnorderedAccessView(mDX12Resource->mD3D12Resource, nullptr, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[static_cast<uint32>(SR_TextureBindType::RWTexture)] = descriptor;
 	return true;
 }
@@ -199,7 +199,7 @@ bool SR_Texture_DX12::InitRTV()
 	}
 
 	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::RTV)->Alloc();
-	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateRenderTargetView(mDX12Resource->mD3D12Resource.Get(), &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
+	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateRenderTargetView(mDX12Resource->mD3D12Resource, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[static_cast<uint32>(SR_TextureBindType::RenderTarget)] = descriptor;
 	return true;
 }
@@ -242,7 +242,7 @@ bool SR_Texture_DX12::InitDSV()
 	}
 
 	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::DSV)->Alloc();
-	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateDepthStencilView(mDX12Resource->mD3D12Resource.Get(), &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
+	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateDepthStencilView(mDX12Resource->mD3D12Resource, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[static_cast<uint32>(SR_TextureBindType::DepthStencil)] = descriptor;
 	return true;
 }

@@ -22,6 +22,7 @@ namespace Shift.Core
 
             aConfig.AddPublicDependency<Shift.Core.CommonProject>(aTarget);
             aConfig.AddPublicDependency<Shift.Core.FacadeProject>(aTarget);
+            aConfig.AddPublicDependency<Shift.Core.RenderProject>(aTarget);
         }
     }
 }

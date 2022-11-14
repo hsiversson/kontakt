@@ -1,6 +1,7 @@
 //ProjectFilter(Interface)
 #pragma once
 #include "SR_Resource.h"
+#include "SR_Format.h"
 
 class SR_TextureResource;
 class SR_Texture;

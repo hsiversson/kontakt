@@ -2,7 +2,9 @@
 #pragma once
 #include "SR_Resource.h"
 
+#if SR_ENABLE_DX12
 struct ID3D12Resource;
+#endif
 
 class SR_TrackedResource : public SR_Resource
 {
@@ -11,7 +13,7 @@ public:
 	virtual ~SR_TrackedResource();
 
 #if SR_ENABLE_DX12
-	SR_ComPtr<ID3D12Resource> mD3D12Resource;
+	ID3D12Resource* mD3D12Resource;
 #endif
 };
 

@@ -81,6 +81,11 @@ bool SAF_Window_Win64::Init(void* aParentWindowHandle)
     return true;
 }
 
+HWND SAF_Window_Win64::GetHandle() const
+{
+	return mWindowHandle;
+}
+
 //void SAF_Window_Win64::PostMessageToMainThread(uint32 aMsg, WPARAM aWPARAM, LPARAM aLPARAM)
 //{
 //	::PostThreadMessage(SC_Thread::GetMainThreadId(), aMsg, aWPARAM, aLPARAM);

@@ -1,7 +1,8 @@
 //ProjectFilter(View)
 #pragma once
 
-class Gfx_View
+struct Gfx_ViewRenderData
 {
 
 };
+

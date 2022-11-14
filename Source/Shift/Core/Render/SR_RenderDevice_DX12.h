@@ -28,6 +28,8 @@ public:
 	SR_CommandQueue* GetCommandQueue(const SR_CommandListType& aType) const override;
 	SR_DescriptorHeap* GetDescriptorHeap(const SR_DescriptorType& aDescriptorType) const override;
 
+	SC_Ref<SR_SwapChain> CreateSwapChain(const SR_SwapChainProperties& aProperties, void* aNativeWindowHandle) override;
+
 	ID3D12Device* GetD3D12Device() const;
 	ID3D12Device5* GetD3D12Device5() const;
 	ID3D12Device6* GetD3D12Device6() const;
