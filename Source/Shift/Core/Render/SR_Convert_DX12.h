@@ -1,8 +1,9 @@
+//ProjectFilter(DX12)
 #pragma once
-#include "SR_Format.h"
-#include "SR_RenderEnums.h"
 
 #if SR_ENABLE_DX12
+#include "SR_Format.h"
+#include "SR_RenderEnums.h"
 
 struct SR_TextureResourceProperties;
 struct SR_BufferResourceProperties;

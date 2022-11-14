@@ -1,5 +1,4 @@
 //ProjectFilter(Interface)
-//ProjectFilter(Interface)
 #pragma once
 #include "SR_Resource.h"
 

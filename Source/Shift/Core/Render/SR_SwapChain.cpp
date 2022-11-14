@@ -1,6 +1,8 @@
 //ProjectFilter(Interface)
+//ProjectFilter(Interface)
 #include "Render_Precompiled.h"
 #include "SR_SwapChain.h"
+#include "SR_Texture.h"
 
 SR_SwapChain::SR_SwapChain()
 	: mCurrentResource(nullptr)

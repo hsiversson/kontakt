@@ -1,7 +1,8 @@
+//ProjectFilter(DX12)
 #pragma once
-#include "SR_SwapChain.h"
 
 #if SR_ENABLE_DX12
+#include "SR_SwapChain.h"
 
 struct IDXGIFactory1;
 struct IDXGIFactory4;

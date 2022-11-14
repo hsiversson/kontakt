@@ -1,4 +1,4 @@
-//ProjectFilter(Interface)
+//ProjectFilter(Interface/Resources)
 #pragma once
 
 struct SR_Descriptor

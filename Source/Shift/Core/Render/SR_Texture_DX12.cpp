@@ -1,7 +1,8 @@
+//ProjectFilter(DX12/Resources)
 #include "Render_Precompiled.h"
-#include "SR_Texture_DX12.h"
 
 #if SR_ENABLE_DX12
+#include "SR_Texture_DX12.h"
 #include "SR_RenderDevice_DX12.h"
 #include "SR_TextureResource_DX12.h"
 
@@ -194,12 +195,13 @@ bool SR_Texture_DX12::InitRTV()
 		break;
 	default:
 		SC_ASSERT(false, "Dimension not supported.");
-		break;
+		return false;
 	}
 
 	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::RTV)->Alloc();
 	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateRenderTargetView(mDX12Resource->mD3D12Resource.Get(), &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[static_cast<uint32>(SR_TextureBindType::RenderTarget)] = descriptor;
+	return true;
 }
 
 bool SR_Texture_DX12::InitDSV()
@@ -236,11 +238,12 @@ bool SR_Texture_DX12::InitDSV()
 		break;
 	default:
 		SC_ASSERT(false, "Dimension not supported.");
-		break;
+		return false;
 	}
 
 	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::DSV)->Alloc();
-	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateRenderTargetView(mDX12Resource->mD3D12Resource.Get(), &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
+	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateDepthStencilView(mDX12Resource->mD3D12Resource.Get(), &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[static_cast<uint32>(SR_TextureBindType::DepthStencil)] = descriptor;
+	return true;
 }
 #endif

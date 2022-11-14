@@ -1,9 +1,11 @@
+//ProjectFilter(DX12/Resources)
 #pragma once
-#include "SR_Texture.h"
 
 #if SR_ENABLE_DX12
+#include "SR_Texture.h"
+
 class SR_TextureResource_DX12;
-class SR_Texture_DX12 : public SR_Texture
+class SR_Texture_DX12 final : public SR_Texture
 {
 public:
 	SR_Texture_DX12(const SR_TextureProperties& aProperties, const SC_Ref<SR_TextureResource>& aTextureResource);

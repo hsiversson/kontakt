@@ -1,11 +1,11 @@
 //ProjectFilter(DX12/Resources)
 #pragma once
-#include "SR_TextureResource.h"
 
 #if SR_ENABLE_DX12
+#include "SR_TextureResource.h"
 
 struct ID3D12Resource;
-class SR_TextureResource_DX12 : public SR_TextureResource
+class SR_TextureResource_DX12 final : public SR_TextureResource
 {
 public:
 	SR_TextureResource_DX12(const SR_TextureResourceProperties& aProperties);

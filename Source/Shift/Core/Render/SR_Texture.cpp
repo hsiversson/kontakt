@@ -6,12 +6,12 @@ SR_Texture::~SR_Texture()
 {
 	for (uint32 i = 0; i < static_cast<uint32>(SR_TextureBindType::COUNT); ++i)
 	{
-		if (i == SR_TextureBindType::RenderTarget)
-			SR_RenderDevice::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::RTV)->Free(mDescriptors[i]);
-		else if (i == SR_TextureBindType::DepthStencil)
-			SR_RenderDevice::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::DSV)->Free(mDescriptors[i]);
-		else
-			SR_RenderDevice::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::Default)->Free(mDescriptors[i]);
+		//if (i == SR_TextureBindType::RenderTarget)
+		//	SR_RenderDevice::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::RTV)->Free(mDescriptors[i]);
+		//else if (i == SR_TextureBindType::DepthStencil)
+		//	SR_RenderDevice::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::DSV)->Free(mDescriptors[i]);
+		//else
+		//	SR_RenderDevice::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::Default)->Free(mDescriptors[i]);
 
 	}
 }

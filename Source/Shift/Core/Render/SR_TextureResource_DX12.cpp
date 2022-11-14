@@ -1,8 +1,8 @@
 //ProjectFilter(DX12/Resources)
 #include "Render_Precompiled.h"
-#include "SR_TextureResource_DX12.h"
 
 #if SR_ENABLE_DX12
+#include "SR_TextureResource_DX12.h"
 #include "SR_RenderDevice_DX12.h"
 
 SR_TextureResource_DX12::SR_TextureResource_DX12(const SR_TextureResourceProperties& aProperties)
@@ -22,7 +22,7 @@ SR_TextureResource_DX12::~SR_TextureResource_DX12()
 
 }
 
-bool SR_TextureResource_DX12::Init(const SR_PixelData* aInitialData, uint32 aDataCount)
+bool SR_TextureResource_DX12::Init(const SR_PixelData* /*aInitialData*/, uint32 /*aDataCount*/)
 {
 	D3D12_RESOURCE_DESC resourceDesc = SR_GetResourceDesc_DX12(mProperties);
 
@@ -55,7 +55,7 @@ bool SR_TextureResource_DX12::Init(const SR_PixelData* aInitialData, uint32 aDat
 	if (!mProperties.mDebugName.empty())
 	{
 		std::wstring debugName;
-		SC_UTF::ToUTF16(debugName, mProperties.mDebugName.c_str(), mProperties.mDebugName.length());
+		SC_UTF::ToUTF16(debugName, mProperties.mDebugName.c_str(), (uint32)mProperties.mDebugName.length());
 		mD3D12Resource->SetName(debugName.c_str());
 	}
 

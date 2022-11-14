@@ -1,9 +1,11 @@
+//ProjectFilter(DX12)
 #include "Render_Precompiled.h"
-#include "SR_SwapChain_DX12.h"
 
 #if SR_ENABLE_DX12
-
+#include "SR_SwapChain_DX12.h"
 #include "SR_RenderDevice_DX12.h"
+#include "SR_CommandQueue_DX12.h"
+#include "SR_TextureResource_DX12.h"
 
 SR_SwapChain_DX12::SR_SwapChain_DX12()
 	: mSwapChainFlags(0)
@@ -57,7 +59,7 @@ void SR_SwapChain_DX12::Present()
 		flags |= DXGI_PRESENT_ALLOW_TEARING;
 
 	uint32 interval = 0;
-	HRESULT hr = mDXGISwapChain->Present(interval, flags);
+	/*HRESULT hr =*/ mDXGISwapChain->Present(interval, flags);
 
 	mCurrentIndex = mDXGISwapChain3->GetCurrentBackBufferIndex();
 }
@@ -96,7 +98,7 @@ bool SR_SwapChain_DX12::CreateSwapChain()
 	fullscreenDesc.RefreshRate.Numerator = 0;
 	fullscreenDesc.RefreshRate.Denominator = 1;
 
-	SR_CommandQueue_DX12* cmdQueue = static_cast<SR_CommandQueue_DX12*>(mRenderDevice->GetGraphicsCommandQueue());
+	SR_CommandQueue_DX12* cmdQueue = static_cast<SR_CommandQueue_DX12*>(SR_RenderDevice_DX12::gInstance->GetCommandQueue(SR_CommandListType::Graphics));
 	hr = mDXGIFactory4->CreateSwapChainForHwnd(cmdQueue->GetD3D12CommandQueue(), static_cast<HWND>(mWindowHandle), &desc, &fullscreenDesc, nullptr, &mDXGISwapChain);
 	if (!SR_VerifyHRESULT(hr))
 		return false;
@@ -145,7 +147,7 @@ bool SR_SwapChain_DX12::CreateResources()
 		framebufferProperties.mAllowRenderTarget = true;
 		framebufferProperties.mAllowWrites = true;
 		framebufferProperties.mType = SR_ResourceType::Texture2D;
-		mBackbufferResources[i].mResource = new SR_TextureResource(framebufferProperties, res);
+		mBackbufferResources[i].mResource = new SR_TextureResource_DX12(framebufferProperties, res);
 		//mBackbufferResources[i].mResource->mLatestResourceState = SR_ResourceState_Present;
 
 		SR_TextureProperties texProperties(framebufferProperties.mFormat);
@@ -159,7 +161,7 @@ bool SR_SwapChain_DX12::CreateResources()
 bool SR_SwapChain_DX12::DestroyResources()
 {
 	if (!SR_RenderDevice_DX12::gInstance)
-		return;
+		return false;
 
 	for (uint32 i = 0; i < 3; ++i)
 	{
@@ -168,6 +170,8 @@ bool SR_SwapChain_DX12::DestroyResources()
 	}
 
 	mCurrentResource = nullptr;
+
+	return true;
 }
 
 #endif

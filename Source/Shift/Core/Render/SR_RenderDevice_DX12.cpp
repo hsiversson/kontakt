@@ -1,8 +1,10 @@
 //ProjectFilter(DX12)
 #include "Render_Precompiled.h"
-#include "SR_RenderDevice_DX12.h"
 
 #if SR_ENABLE_DX12
+#include "SR_RenderDevice_DX12.h"
+#include "SR_TextureResource_DX12.h"
+#include "SR_Texture_DX12.h"
 
 extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 606; }
 extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = ".\\D3D12\\"; }
@@ -93,6 +95,54 @@ bool SR_RenderDevice_DX12::Init()
 	}
 
 	return false;
+}
+
+SC_Ref<SR_TextureResource> SR_RenderDevice_DX12::CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData, uint32 aDataCount)
+{
+	SC_Ref<SR_TextureResource_DX12> newTextureResource = new SR_TextureResource_DX12(aTextureResourceProperties);
+
+	if (!newTextureResource->Init(aInitialData, aDataCount))
+		return nullptr;
+
+	return newTextureResource;
+}
+
+SC_Ref<SR_Texture> SR_RenderDevice_DX12::CreateTexture(const SR_TextureProperties& aTextureProperties, const SC_Ref<SR_TextureResource>& aResource)
+{
+	SC_Ref<SR_Texture_DX12> newTexture = new SR_Texture_DX12(aTextureProperties, aResource);
+
+	if (!newTexture->Init())
+		return nullptr;
+
+	return newTexture;
+}
+
+SR_CommandQueue* SR_RenderDevice_DX12::GetCommandQueue(const SR_CommandListType& /*aType*/) const
+{
+	return nullptr;
+}
+
+SR_DescriptorHeap* SR_RenderDevice_DX12::GetDescriptorHeap(const SR_DescriptorType& aDescriptorType) const
+{
+	switch (aDescriptorType)
+	{
+	case SR_DescriptorType::CBV:
+	case SR_DescriptorType::SRV:
+	case SR_DescriptorType::UAV:
+		return mDefaultDescriptorHeap;
+
+	case SR_DescriptorType::RTV:
+		return mRTVDescriptorHeap;
+
+	case SR_DescriptorType::DSV:
+		return mDSVDescriptorHeap;
+
+	case SR_DescriptorType::Sampler:
+		return mSamplerDescriptorHeap;
+
+	default:
+		return nullptr;
+	}
 }
 
 ID3D12Device* SR_RenderDevice_DX12::GetD3D12Device() const

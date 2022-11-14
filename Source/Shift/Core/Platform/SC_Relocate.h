@@ -43,6 +43,8 @@ struct SC_RelocationUtility<T, false>
 	}
 };
 
+void SC_RelocateBytes(void* aDst, void* aSrc, size_t aCount);
+
 template <class T>
 struct SC_RelocationUtility<T, true>
 {
@@ -73,10 +75,8 @@ struct SC_RelocationUtility<T, true>
 	}
 };
 
-void SC_RelocateBytes(void* aDst, void* aSrc, size_t aCount);
-
 template<class T>
-inline void SC_Relocate(T* aDst, const T* aSrc)
+inline void SC_Relocate(T* aDst, T* aSrc)
 {
 	if (aDst == aSrc)
 		return;
@@ -85,7 +85,7 @@ inline void SC_Relocate(T* aDst, const T* aSrc)
 }
 
 template <class T>
-inline void SC_RelocateN(T* aDst, const T* aSrc, int aCount)
+inline void SC_RelocateN(T* aDst, T* aSrc, int aCount)
 {
 	if (aDst == aSrc)
 		return;

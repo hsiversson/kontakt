@@ -23,6 +23,8 @@ enum class SR_TextureDimension : uint8
 
 struct SR_TextureProperties : public SR_TextureSection
 {
+    SR_TextureProperties(const SR_Format& aFormat) : mFormat(aFormat), mDimension(SR_TextureDimension::Texture2D) {}
+
     SR_Format mFormat;
     SR_TextureDimension mDimension;
     bool mBindTypes[static_cast<uint8>(SR_TextureBindType::COUNT)];

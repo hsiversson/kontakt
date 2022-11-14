@@ -2,7 +2,6 @@
 #pragma once
 
 #if SR_ENABLE_DX12
-
 #include "d3d12.h"
 #include <dxgi1_6.h>
 #pragma comment(lib,"d3d12.lib")
@@ -45,7 +44,7 @@ inline const char* SR_GetRemovedReasonString(HRESULT aValue)
 
 inline bool SR_VerifyHRESULT(const HRESULT& aHRESULT)
 {
-	bool outputDebugData = false;
+	//bool outputDebugData = false;
 
 	switch (aHRESULT)
 	{
@@ -63,24 +62,24 @@ inline bool SR_VerifyHRESULT(const HRESULT& aHRESULT)
 		return false;
 	case DXGI_ERROR_DEVICE_HUNG:
 		SC_ERROR("[DXGI ERROR]: Device Hung");
-		outputDebugData = true;
+		//outputDebugData = true;
 		break;
 	case DXGI_ERROR_DEVICE_REMOVED:
 		SC_ERROR("[DXGI ERROR]: Device Removed");
-		SC_ERROR("Removed Reason: {}", SR_GetRemovedReasonString(SR_RenderDevice_DX12::gInstance->GetD3D12Device()->GetDeviceRemovedReason()));
-		outputDebugData = true;
+		//SC_ERROR("Removed Reason: {}", SR_GetRemovedReasonString(SR_RenderDevice_DX12::gInstance->GetD3D12Device()->GetDeviceRemovedReason()));
+		//outputDebugData = true;
 		break;
 	case S_OK:
 	case S_FALSE:
 		return true;
 	default:
-		SC_ERROR("[DX12 ERROR]: Unknown Reason ({:0x})", aValue);
+		SC_ERROR("[DX12 ERROR]: Unknown Reason ({:0x})", aHRESULT);
 		return false;
 	}
 
-	if (outputDebugData)
-	{
-	}
+	//if (outputDebugData)
+	//{
+	//}
 
 	SC_ASSERT(false);
 	return false;

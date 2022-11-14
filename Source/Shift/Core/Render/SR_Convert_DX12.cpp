@@ -1,7 +1,8 @@
+//ProjectFilter(DX12)
 #include "Render_Precompiled.h"
-#include "SR_Convert_DX12.h"
 
 #if SR_ENABLE_DX12
+#include "SR_Convert_DX12.h"
 #include "SR_TextureResource.h"
 
 SR_Format SR_ConvertFormat_DX12(DXGI_FORMAT aFormat)
@@ -203,7 +204,7 @@ D3D12_RESOURCE_DESC SR_GetResourceDesc_DX12(const SR_TextureResourceProperties& 
 	return resourceDesc;
 }
 
-D3D12_RESOURCE_DESC SR_GetResourceDesc_DX12(const SR_BufferResourceProperties& aProperties)
+D3D12_RESOURCE_DESC SR_GetResourceDesc_DX12(const SR_BufferResourceProperties& /*aProperties*/)
 {
 	D3D12_RESOURCE_DESC resourceDesc = {};
 	return resourceDesc;
