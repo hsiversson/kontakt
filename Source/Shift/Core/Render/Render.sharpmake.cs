@@ -1,4 +1,6 @@
 
+using System;
+using System.IO;
 using Sharpmake;
 
 namespace Shift.Core
@@ -27,7 +29,19 @@ namespace Shift.Core
         {
             base.ConfigureWin64(aConfig, aTarget);
 
+            // DirectX Agility SDK
+			aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\D3D12\include");
+			aConfig.TargetCopyFiles.Add(
+				@"[project.ShiftExternalFolderPath]\D3D12\bin\d3d12core.dll",
+				@"[project.ShiftExternalFolderPath]\D3D12\bin\d3d12sdklayers.dll"
+			);
 
+            // DirectX shader compiler
+            aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\DirectXShaderCompiler\include");
+            aConfig.TargetCopyFiles.Add(
+                @"[project.ShiftExternalFolderPath]\DirectXShaderCompiler\bin\dxcompiler.dll",
+                @"[project.ShiftExternalFolderPath]\DirectXShaderCompiler\bin\dxil.dll"
+            );
         }
     }
 }

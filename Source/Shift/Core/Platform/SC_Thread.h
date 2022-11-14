@@ -25,6 +25,7 @@ public:
 	static const char* GetCurrentThreadName();
 private:
 	std::thread mThread;
+	std::string mName;
 	
 	static thread_local SC_Thread* gCurrentThread;
 };

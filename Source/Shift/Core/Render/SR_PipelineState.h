@@ -1,6 +1,8 @@
 //ProjectFilter(Interface/Shader)
 #pragma once
-class SR_PipelineState
+#include "SR_Resource.h"
+
+class SR_PipelineState : public SR_Resource
 {
 };
 

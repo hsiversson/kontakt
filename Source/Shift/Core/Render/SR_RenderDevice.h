@@ -3,6 +3,8 @@
 
 #include "SR_Texture.h"
 #include "SR_BufferView.h"
+#include "SR_Shader.h"
+#include "SR_PipelineState.h"
 
 class SR_RenderDevice
 {
@@ -17,6 +19,11 @@ public:
 
     SC_Ref<SR_BufferResource> CreateBufferResource();
     SC_Ref<SR_BufferView> CreateBufferView();
+
+    SC_Ref<SR_Shader> CreateShader();
+    SC_Ref<SR_PipelineState> CreatePipelineState();
+
+    static SR_RenderDevice* gInstance;
 
 protected:
     bool mEnableDebugMode;

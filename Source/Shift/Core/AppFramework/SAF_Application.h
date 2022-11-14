@@ -4,6 +4,7 @@ enum class SAF_ReturnCode
 {
     Unknown,
     OK,
+    Exit,
     Failed,
     Restart,
 };
@@ -25,7 +26,9 @@ public:
 
     virtual bool Init();
 
-    virtual SAF_ReturnCode Run();
+    SAF_ReturnCode Run();
 
-private:
+protected:
+    virtual bool Update(SAF_ReturnCode& aOutReturnCode);
+
 };

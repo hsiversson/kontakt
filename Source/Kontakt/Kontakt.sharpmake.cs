@@ -3,6 +3,8 @@ using Shift;
 
 [module: Sharpmake.Include("KClient/KClient.sharpmake.cs")]
 [module: Sharpmake.Include("KClientExe/KClientExe.sharpmake.cs")]
+[module: Sharpmake.Include("KServer/KServer.sharpmake.cs")]
+[module: Sharpmake.Include("KServerExe/KServerExe.sharpmake.cs")]
 [module: Sharpmake.Include("KShared/KShared.sharpmake.cs")]
 
 namespace Kontakt

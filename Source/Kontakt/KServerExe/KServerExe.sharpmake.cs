@@ -1,42 +1,54 @@
 using System.Collections.Generic;
+using System.IO;
+using Sharpmake;
 using Shift;
 
 namespace Kontakt
 {
     [Sharpmake.Generate]
-    public class KontaktProject : ProjectInterface
+    public class KServerExeProject : KontaktProject
     {
-        public KontaktProject()
+        public KServerExeProject()
         {
-            SourceRootPath= @"[project.CodeFolderPath]\Kontakt\[project.name]";
-            EnableVersionStampingPostBuild = true;
+            Name = "KServerExe";
+
+            AddTargets(Shift.Target.GetWin64Targets());
+
+            DeployProject = true;
+
+            //XResourcesImg.Add(
+            //    "kontakt-exe-icon.ico",
+            //    "icon.ico"
+            //);
         }
 
-        public override void ConfigureAll(Configuration aConfig, Target aTarget)
+        public override void ConfigureAll(Configuration aConfig, Shift.Target aTarget)
         {
             base.ConfigureAll(aConfig, aTarget);
 
-            aConfig.AddPrivateDependency<Shift.Core.CommonProject>(aTarget);
-        }
+            aConfig.SolutionFolder = "4. Executables";
+            aConfig.Output = Configuration.OutputType.Exe;
 
-        [Sharpmake.Generate]
-        public class KontaktSolution : SolutionInterface
-        {
-            public KontaktSolution()
-            {
-                Name = "Kontakt";
+            aConfig.TargetFileName = "KontaktClient_" + Util.GetSimplePlatformString(aTarget.Platform) + "_[target.BuildConfig]";
+            aConfig.TargetFileSuffix = string.Empty;
 
-                AddTargets(Target.GetWin64Targets());
-                AddTargets(Target.GetWin64ServerTargets());
-            }
+            // No precompiled header
+            aConfig.PrecompHeader = null;
+            aConfig.PrecompSource = null;
 
-            public override void ConfigureWin64(Configuration aConfig, Target aTarget)
-            {
-                base.ConfigureWin64(aConfig, aTarget);
+            aConfig.Options.Add(Options.Vc.Linker.SubSystem.Windows);
+            aConfig.Options.Add(Options.Vc.ManifestTool.EnableDpiAwareness.Yes);
 
-                if (target.Usage == Usage.Common)
-                    aConfig.AddProject<Kontakt.KClientExeProject>(target);
-            }
+            aConfig.AddPrivateDependency<Kontakt.KServerProject>(aTarget);
+            aConfig.AddPrivateDependency<Shift.Core.AppFrameworkProject>(aTarget);
+            aConfig.AddPrivateDependency<Shift.Core.RenderProject>(aTarget);
+            aConfig.AddPrivateDependency<Shift.Submodules.GameEntityProject>(aTarget);
+            aConfig.AddPrivateDependency<Shift.Submodules.GraphicsProject>(aTarget);
+
+            //if (aTarget.Optimization != Shift.Optimization.Shipping)
+            //{
+            //    aConfig.AddPrivateDependency<Shift.EditorProject>(aTarget);
+            //}
         }
     }
 }

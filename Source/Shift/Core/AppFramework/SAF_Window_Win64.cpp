@@ -4,10 +4,9 @@
 
 #if IS_WINDOWS_PLATFORM
 
-static constexpr const wchar_t* gWindowClassName = L"ShiftEngineWindowClassId";
-
 static LRESULT CALLBACK	SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPARAM);
 
+static constexpr const char* gWindowClassName = "ShiftEngineWindowClassId";
 static bool RegisterWindowClass()
 {
     static bool initialized = false;
@@ -21,9 +20,9 @@ static bool RegisterWindowClass()
 	wcex.lpfnWndProc = SAF_WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
-	wcex.hInstance = GetModuleHandle(NULL);
+	wcex.hInstance = GetModuleHandle(nullptr);
 	wcex.hIcon = nullptr;//reinterpret_cast<HICON>(aParams.myNativeAppIcon);
-	wcex.hCursor = mCursor;
+	wcex.hCursor = nullptr;//mCursor;
 	wcex.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
 	wcex.lpszMenuName = 0;
 	wcex.lpszClassName = gWindowClassName;
@@ -49,26 +48,43 @@ SAF_Window_Win64::~SAF_Window_Win64()
 
 }
 
-bool SAF_Window_Win64::Init()
+bool SAF_Window_Win64::Init(void* aParentWindowHandle)
 {
-    // Register window class
+	if (!RegisterWindowClass())
+		return false;
+	
+	RECT windowRect = { 100, 100, 2560, 1440 };
 
     mWindowHandle = ::CreateWindow(
-		SAF_WindowThread_Win64::Get()->GetWndClassName(),
-		name.c_str(),
-		windowStyle,
+		gWindowClassName,
+		"Kontakt",
+		WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_OVERLAPPEDWINDOW,
 		windowRect.left,
 		windowRect.top,
 		(windowRect.right - windowRect.left),
 		(windowRect.bottom - windowRect.top),
 		(HWND)aParentWindowHandle,
 		nullptr,
-		::GetModuleHandle(NULL),
+		::GetModuleHandle(nullptr),
 		nullptr
 	);
 
+	if (!mWindowHandle)
+		return false;
+
+	if (::IsIconic(mWindowHandle))
+		ShowWindow(mWindowHandle, SW_RESTORE);
+
+	::UpdateWindow(mWindowHandle);
+
+	::ShowWindow(mWindowHandle, SW_SHOW);
     return true;
 }
+
+//void SAF_Window_Win64::PostMessageToMainThread(uint32 aMsg, WPARAM aWPARAM, LPARAM aLPARAM)
+//{
+//	::PostThreadMessage(SC_Thread::GetMainThreadId(), aMsg, aWPARAM, aLPARAM);
+//}
 
 LRESULT CALLBACK SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPARAM)
 {
@@ -78,8 +94,11 @@ LRESULT CALLBACK SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPAR
 		return 0;
 	case WM_EXITSIZEMOVE:
 		return 0;
+	case WM_CLOSE:
+		PostQuitMessage(0);
+		return 0;
 	default:
-		return DefWindowProcW(aHwnd, aMsg, aWPARAM, aLPARAM);
+		return DefWindowProc(aHwnd, aMsg, aWPARAM, aLPARAM);
 	}
 }
 

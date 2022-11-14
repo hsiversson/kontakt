@@ -12,7 +12,7 @@ void SC_Logger::Destroy()
 {
 }
 
-void SC_Logger::LogMessage(const SC_LogType& aType, const std::string& aMsg, const char* aFunc, bool aFlush)
+void SC_Logger::LogMessage(const SC_LogType& /*aType*/, const std::string& /*aMsg*/, const char* /*aFunc*/, bool /*aFlush*/)
 {
 }
 

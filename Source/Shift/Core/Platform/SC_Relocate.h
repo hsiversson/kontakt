@@ -1,6 +1,12 @@
 //ProjectFilter(Misc)
 #pragma once
 #include <new>
+#include "SC_TypeTraits.h"
+
+void SC_Memcpy(void* aDst, const void* aSrc, SC_SizeT aSize);
+void SC_Memmove(void* aDst, void* aSrc, SC_SizeT aSize);
+void SC_Memset(void* aDst, int aValue, SC_SizeT aSize);
+void SC_ZeroMemory(void* aDst, SC_SizeT aSize);
 
 template<typename T>
 struct SC_AllowMemcpyRelocation
@@ -27,26 +33,52 @@ struct SC_RelocationUtility<T, false>
 		if (aDst < aSrc)
 		{
 			for (int i = 0; i < aCount; ++i)
-			{
 				Relocate(aDst + i, aSrc + i);
-			}
 		}
 		else if (aSrc < aDst)
 		{
 			for (int i = aCount - 1; i >= 0; --i)
-			{
 				Relocate(aDst + i, aSrc + i);
-			}
 		}
+	}
+};
+
+template <class T>
+struct SC_RelocationUtility<T, true>
+{
+	static inline void Relocate(T* aDst, T* aSrc)
+	{
+		switch (sizeof(T))
+		{
+		case 1:
+			*((int8*)aDst) = *((int8*)aSrc);
+			break;
+		case 2:
+			*((int16*)aDst) = *((int16*)aSrc);
+			break;
+		case 4:
+			*((int32*)aDst) = *((int32*)aSrc);
+			break;
+		case 8:
+			*((int64*)aDst) = *((int64*)aSrc);
+			break;
+		default:
+			SC_Memcpy((void*)aDst, (const void*)aSrc, sizeof(T));
+			break;
+		}
+	}
+	static inline void RelocateN(T* aDst, T* aSrc, int aCount)
+	{
+		SC_RelocateBytes((void*)aDst, (void*)aSrc, aCount * sizeof(T));
 	}
 };
 
 void SC_RelocateBytes(void* aDst, void* aSrc, size_t aCount);
 
 template<class T>
-inline void SC_Relocate(T* aDest, const T* aSrc)
+inline void SC_Relocate(T* aDst, const T* aSrc)
 {
-	if (aDest == aSrc)
+	if (aDst == aSrc)
 		return;
 
 	SC_RelocationUtility<T, SC_AllowMemcpyRelocation<T>::mValue>::Relocate(aDst, aSrc);

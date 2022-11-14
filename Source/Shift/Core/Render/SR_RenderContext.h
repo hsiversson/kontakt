@@ -11,6 +11,8 @@ public:
     void BeginTask(SR_CommandList* aCmdList);
     void EndTask();
 
+
+
 private:
     SC_Ref<SR_CommandList> mCurrentCmdList;
 };

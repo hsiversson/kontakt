@@ -4,14 +4,19 @@
 
 #if SR_ENABLE_DX12
 
+extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 606; }
+extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = ".\\D3D12\\"; }
 
+SR_RenderDevice_DX12* SR_RenderDevice_DX12::gInstance = nullptr;
 
 SR_RenderDevice_DX12::SR_RenderDevice_DX12()
 {
+	gInstance = this;
 }
 
 SR_RenderDevice_DX12::~SR_RenderDevice_DX12()
 {
+	gInstance = nullptr;
 }
 
 bool SR_RenderDevice_DX12::Init()
@@ -88,6 +93,21 @@ bool SR_RenderDevice_DX12::Init()
 	}
 
 	return false;
+}
+
+ID3D12Device* SR_RenderDevice_DX12::GetD3D12Device() const
+{
+	return mD3D12Device.Get();
+}
+
+ID3D12Device5* SR_RenderDevice_DX12::GetD3D12Device5() const
+{
+	return mD3D12Device5.Get();
+}
+
+ID3D12Device6* SR_RenderDevice_DX12::GetD3D12Device6() const
+{
+	return mD3D12Device6.Get();
 }
 
 #endif

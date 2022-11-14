@@ -64,15 +64,51 @@ namespace Shift
             aConfig.Options.Add(Options.Vc.General.PreferredToolArchitecture.x64);
             aConfig.Options.Add(Options.Vc.Compiler.FloatingPointModel.Fast);
             aConfig.Options.Add(Options.Vc.Compiler.RTTI.Enable);
+            aConfig.Options.Add(Options.Vc.Compiler.CppLanguageStandard.Latest);
             aConfig.Options.Add(Options.Vc.General.WarningLevel.Level4);
             aConfig.Options.Add(Options.Vc.General.DebugInformation.ProgramDatabase);
             aConfig.Options.Add(Options.Vc.General.TreatWarningsAsErrors.Enable);
             aConfig.Options.Add(Options.Vc.Linker.GenerateDebugInformation.Enable);
             aConfig.Options.Add(Options.Vc.Linker.LargeAddress.Default);
+            aConfig.Options.Add(Options.Vc.Compiler.Exceptions.Enable);
         }
 
+        [Configure(Platform.win32 | Platform.win64)]
+        [ConfigurePriority(5)]
+        public virtual void ConfigureMicrosoft(Configuration aConfig, Target aTarget)
+        {
+            var disabledWarnings = new Options.Vc.Compiler.DisableSpecificWarnings();
+            disabledWarnings.Add(
+                "4201",     // Nonstandard extension used: nameless struct/union.
+                "26495",    // Variable <var> is uninitialized. Always initializea member variable.
+                "26812"    // Prefer 'enum class' over 'enum'.
+                );
+
+            aConfig.Options.Add(disabledWarnings);
+
+            aConfig.Options.Add(Options.Vc.Librarian.TreatLibWarningAsErrors.Enable);
+            aConfig.Options.Add(Options.Vc.Linker.TreatLinkerWarningAsErrors.Enable);
+            aConfig.Options.Add(
+                new Options.Vc.Linker.DisableSpecificWarnings(
+                "4211",     // LNK4211: This object file does not define any previously undefined public symbols.
+                "4099"      // LNK4099: PDB not found.
+                )
+            );
+            aConfig.Options.Add(
+                new Options.Vc.Librarian.DisableSpecificWarnings(
+                "4211",     // LNK4211: This object file does not define any previously undefined public symbols.
+                "4099"      // LNK4099: PDB not found.
+                )
+            );
+        }
+
+        [Configure(Platform.win64)]
         public virtual void ConfigureWin64(Configuration aConfig, Target aTarget)
         {
+            aConfig.Defines.Add(
+                "WIN64",
+                "_WINDOWS"
+            );
         }
 
         [Configure]

@@ -2,6 +2,7 @@
 [module: Sharpmake.Include("Audio/Audio.sharpmake.cs")]
 [module: Sharpmake.Include("Common/Common.sharpmake.cs")]
 [module: Sharpmake.Include("EngineTypes/EngineTypes.sharpmake.cs")]
+[module: Sharpmake.Include("Facade/Facade.sharpmake.cs")]
 [module: Sharpmake.Include("InputOutput/InputOutput.sharpmake.cs")]
 [module: Sharpmake.Include("Network/Network.sharpmake.cs")]
 [module: Sharpmake.Include("Physics/Physics.sharpmake.cs")]

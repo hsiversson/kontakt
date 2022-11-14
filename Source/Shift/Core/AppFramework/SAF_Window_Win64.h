@@ -9,9 +9,10 @@ public:
     SAF_Window_Win64();
     ~SAF_Window_Win64();
 
-    bool Init();
+    bool Init(void* aParentWindowHandle = nullptr);
 
 private:
+    void PostMessageToMainThread(uint32 aMsg, WPARAM aWPARAM, LPARAM aLPARAM);
 
 	HWND mWindowHandle;
 };

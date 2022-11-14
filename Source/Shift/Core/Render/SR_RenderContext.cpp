@@ -2,6 +2,8 @@
 #include "Render_Precompiled.h"
 #include "SR_RenderContext.h"
 
+#include "SR_CommandList.h"
+
 SR_RenderContext::SR_RenderContext()
 {
 }
