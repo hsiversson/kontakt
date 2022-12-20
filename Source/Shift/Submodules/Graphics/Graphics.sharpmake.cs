@@ -17,7 +17,7 @@ namespace Shift.Submodules
             aConfig.PrecompHeader = "Graphics_Precompiled.h";
             aConfig.PrecompSource = "Graphics_Precompiled.cpp";
 
-            aConfig.AddPrivateDependency<Core.RenderProject>(aTarget);
+            aConfig.AddPublicDependency<Core.RenderProject>(aTarget);
         }
     }
 }

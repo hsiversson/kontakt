@@ -19,28 +19,28 @@ SR_Texture_DX12::~SR_Texture_DX12()
 
 bool SR_Texture_DX12::Init()
 {
-	if (mProperties.mBindTypes[static_cast<uint32>(SR_TextureBindType::Texture)] && !InitSRV())
+	if ((mProperties.mBindFlags & SR_TextureBindFlag_Texture) && !InitSRV())
 		return false;
 
-	if (mProperties.mBindTypes[static_cast<uint32>(SR_TextureBindType::RWTexture)] && !InitUAV())
+	if ((mProperties.mBindFlags & SR_TextureBindFlag_RWTexture) && !InitUAV())
 		return false;
 
-	if (mProperties.mBindTypes[static_cast<uint32>(SR_TextureBindType::RenderTarget)] && !InitRTV())
+	if ((mProperties.mBindFlags & SR_TextureBindFlag_RenderTarget) && !InitRTV())
 		return false;
 
-	if (mProperties.mBindTypes[static_cast<uint32>(SR_TextureBindType::DepthStencil)] && !InitDSV())
+	if ((mProperties.mBindFlags & SR_TextureBindFlag_DepthStencil) && !InitDSV())
 		return false;
 
 	return true;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE SR_Texture_DX12::GetCPUHandle(const SR_TextureBindType& aDescriptorType) const
+D3D12_CPU_DESCRIPTOR_HANDLE SR_Texture_DX12::GetCPUHandle(const SR_TextureDescriptorType& aDescriptorType) const
 {
 	const SR_Descriptor& descriptor = mDescriptors[static_cast<uint32>(aDescriptorType)];
 	return D3D12_CPU_DESCRIPTOR_HANDLE{descriptor.mDescriptorHandleCPU};
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE SR_Texture_DX12::GetGPUHandle(const SR_TextureBindType& aDescriptorType) const
+D3D12_GPU_DESCRIPTOR_HANDLE SR_Texture_DX12::GetGPUHandle(const SR_TextureDescriptorType& aDescriptorType) const
 {
 	const SR_Descriptor& descriptor = mDescriptors[static_cast<uint32>(aDescriptorType)];
 	return D3D12_GPU_DESCRIPTOR_HANDLE{descriptor.mDescriptorHandleGPU};
@@ -99,9 +99,9 @@ bool SR_Texture_DX12::InitSRV()
 		return false;
 	}
 
-	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::SRV)->Alloc();
+	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::CBV_SRV_UAV)->Alloc();
 	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateShaderResourceView(mDX12Resource->mD3D12Resource, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
-	mDescriptors[static_cast<uint32>(SR_TextureBindType::Texture)] = descriptor;
+	mDescriptors[(uint32)SR_TextureDescriptorType::Texture] = descriptor;
 	return true;
 }
 
@@ -154,9 +154,9 @@ bool SR_Texture_DX12::InitUAV()
 		return false;
 	}
 
-	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::UAV)->Alloc();
+	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::UAV)->Alloc();
 	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateUnorderedAccessView(mDX12Resource->mD3D12Resource, nullptr, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
-	mDescriptors[static_cast<uint32>(SR_TextureBindType::RWTexture)] = descriptor;
+	mDescriptors[(uint32)SR_TextureDescriptorType::RWTexture] = descriptor;
 	return true;
 }
 
@@ -198,9 +198,9 @@ bool SR_Texture_DX12::InitRTV()
 		return false;
 	}
 
-	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::RTV)->Alloc();
+	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::RTV)->Alloc();
 	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateRenderTargetView(mDX12Resource->mD3D12Resource, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
-	mDescriptors[static_cast<uint32>(SR_TextureBindType::RenderTarget)] = descriptor;
+	mDescriptors[(uint32)SR_TextureDescriptorType::RenderTarget] = descriptor;
 	return true;
 }
 
@@ -241,9 +241,9 @@ bool SR_Texture_DX12::InitDSV()
 		return false;
 	}
 
-	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorType::DSV)->Alloc();
+	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::DSV)->Alloc();
 	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateDepthStencilView(mDX12Resource->mD3D12Resource, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
-	mDescriptors[static_cast<uint32>(SR_TextureBindType::DepthStencil)] = descriptor;
+	mDescriptors[(uint32)SR_TextureDescriptorType::DepthStencil] = descriptor;
 	return true;
 }
 #endif

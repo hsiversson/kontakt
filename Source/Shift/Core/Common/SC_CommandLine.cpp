@@ -1,3 +1,4 @@
+//ProjectFilter(CommandLine)
 #include "Common_Precompiled.h"
 #include "SC_CommandLine.h"
 

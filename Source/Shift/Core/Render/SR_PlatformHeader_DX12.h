@@ -3,6 +3,7 @@
 
 #if SR_ENABLE_DX12
 #include "d3d12.h"
+#include "d3d12shader.h"
 #include <dxgi1_6.h>
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")

@@ -5,3 +5,4 @@
 #include "SR_PlatformHeader.h"
 #include "SR_Format.h"
 #include "SR_Descriptor.h"
+#include "SR_RenderDevice.h"

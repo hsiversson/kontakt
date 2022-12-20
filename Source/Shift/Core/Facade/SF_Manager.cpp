@@ -13,6 +13,11 @@ SF_Manager::~SF_Manager()
 
 }
 
+bool SF_Manager::Init(void* aWindowHandle)
+{
+	return false;
+}
+
 void SF_Manager::Render()
 {
 

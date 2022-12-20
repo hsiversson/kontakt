@@ -21,15 +21,13 @@ SR_SwapChain_DX12::~SR_SwapChain_DX12()
 
 bool SR_SwapChain_DX12::Init(const SR_SwapChainProperties& aProperties, void* aWindowHandle)
 {
-	HRESULT hr = CreateDXGIFactory1(IID_PPV_ARGS(&mDXGIFactory));
+	mDXGIFactory = SR_RenderDevice_DX12::gInstance->GetDXGIFactory1();
+
+	HRESULT hr = mDXGIFactory.As(&mDXGIFactory4);
 	if (!SR_VerifyHRESULT(hr))
 		return false;
 
-	hr = mDXGIFactory.As(&mDXGIFactory4);
-	if (!SR_VerifyHRESULT(hr))
-		return false;
-
-	hr = mDXGIFactory.As(&mDXGIFactory6);
+	hr = mDXGIFactory.As(&mDXGIFactory5);
 	if (!SR_VerifyHRESULT(hr))
 		return false;
 
@@ -66,8 +64,8 @@ void SR_SwapChain_DX12::Present()
 
 bool SR_SwapChain_DX12::CreateSwapChain()
 {
-	bool allowTearing = false;
-	HRESULT hr = mDXGIFactory6->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &allowTearing, sizeof(allowTearing));
+	BOOL allowTearing = FALSE;
+	HRESULT hr = mDXGIFactory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &allowTearing, sizeof(allowTearing));
 	if (!SR_VerifyHRESULT(hr))
 		return false;
 
@@ -101,7 +99,7 @@ bool SR_SwapChain_DX12::CreateSwapChain()
 	if (!SR_VerifyHRESULT(hr))
 		return false;
 
-	hr = mDXGIFactory6->MakeWindowAssociation(HWND(mWindowHandle), DXGI_MWA_NO_WINDOW_CHANGES);
+	hr = mDXGIFactory->MakeWindowAssociation(HWND(mWindowHandle), DXGI_MWA_NO_WINDOW_CHANGES);
 	if (!SR_VerifyHRESULT(hr))
 		return false;
 
@@ -148,7 +146,7 @@ bool SR_SwapChain_DX12::CreateResources()
 		mBackbufferResources[i].mResource = new SR_TextureResource_DX12(framebufferProperties, res);
 		//mBackbufferResources[i].mResource->mLatestResourceState = SR_ResourceState_Present;
 
-		SR_TextureProperties texProperties(framebufferProperties.mFormat);
+		SR_TextureProperties texProperties(framebufferProperties.mFormat, SR_TextureBindFlag_Texture | SR_TextureBindFlag_RWTexture | SR_TextureBindFlag_RenderTarget);
 		mBackbufferResources[i].mTexture = SR_RenderDevice_DX12::gInstance->CreateTexture(texProperties, mBackbufferResources[i].mResource);
 	}
 

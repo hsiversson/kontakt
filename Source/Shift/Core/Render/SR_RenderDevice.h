@@ -5,11 +5,13 @@
 #include "SR_RenderEnums.h"
 #include "SR_DescriptorHeap.h"
 #include "SR_Texture.h"
-#include "SR_BufferView.h"
+#include "SR_Buffer.h"
 #include "SR_Shader.h"
 #include "SR_PipelineState.h"
 #include "SR_CommandQueue.h"
 #include "SR_SwapChain.h"
+#include "SR_DeviceCapabilities.h"
+#include "SR_ShaderCompiler.h"
 
 class SR_RenderDevice
 {
@@ -19,30 +21,47 @@ public:
 
     virtual bool Init() = 0;
 
+    void BeginFrame();
+    void EndFrame();
+    void Present();
+
 	virtual SC_Ref<SR_TextureResource> CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData = nullptr, uint32 aDataCount = 0);
 	virtual SC_Ref<SR_Texture> CreateTexture(const SR_TextureProperties& aTextureProperties, const SC_Ref<SR_TextureResource>& aResource);
 
 	virtual SC_Ref<SR_BufferResource> CreateBufferResource();
-	virtual SC_Ref<SR_BufferView> CreateBufferView();
+	virtual SC_Ref<SR_Buffer> CreateBufferView();
 
-    virtual SC_Ref<SR_Shader> CreateShader();
+    virtual SC_Ref<SR_Shader> CreateShader(const SR_CreateShaderProperties& aCreateShaderProperties);
     virtual SC_Ref<SR_PipelineState> CreatePipelineState();
 
 	virtual SR_CommandQueue* GetCommandQueue(const SR_CommandListType& aType) const;
-	virtual SR_DescriptorHeap* GetDescriptorHeap(const SR_DescriptorType& aDescriptorType) const;
+	virtual SR_DescriptorHeap* GetDescriptorHeap(const SR_DescriptorHeapType& aDescriptorHeapType) const;
 
 	virtual SC_Ref<SR_SwapChain> CreateSwapChain(const SR_SwapChainProperties& aProperties, void* aNativeWindowHandle);
 
     const SR_API& GetAPI() const;
+
+    SR_RootSignature* GetRootSignature(const SR_RootSignatureType& aType) const;
+    SR_ShaderCompiler* GetShaderCompiler() const;
     
+    void SetCurrentSwapChain(SR_SwapChain* aSwapChain);
+
     static bool Create(const SR_API& aAPIType);
     static void Destroy();
+
+public:
+    SR_DeviceCapabilities mCaps;
 
     static SR_RenderDevice* gInstance;
 
 protected:
-
     SR_API mRenderApi;
+
+    SC_Ref<SR_SwapChain> mCurrentSwapChain;
+
+    SC_Ptr<SR_ShaderCompiler> mShaderCompiler;
+
+    SC_StaticArray<SC_Ref<SR_RootSignature>, SR_RootSignatureType_COUNT> mRootSignatures;
 
     bool mEnableDebugMode;
     bool mEnableBreakOnError;

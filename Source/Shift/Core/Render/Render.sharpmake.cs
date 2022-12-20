@@ -42,6 +42,15 @@ namespace Shift.Core
                 @"[project.ShiftExternalFolderPath]\DirectXShaderCompiler\bin\dxcompiler.dll",
                 @"[project.ShiftExternalFolderPath]\DirectXShaderCompiler\bin\dxil.dll"
             );
+
+            // NvAPI
+            aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\Nvidia\nvapi\include");
+            aConfig.LibraryPaths.Add(@"[project.ShiftExternalFolderPath]\Nvidia\nvapi\lib");
+            
+            // AGS
+            aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\AMD\ags\ags_lib\inc");
+            aConfig.LibraryPaths.Add(@"[project.ShiftExternalFolderPath]\AMD\ags\ags_lib\lib");
+            aConfig.TargetCopyFiles.Add(@"[project.ShiftExternalFolderPath]\AMD\ags\ags_lib\lib\amd_ags_x64.dll");
         }
     }
 }

@@ -1,3 +1,4 @@
+//ProjectFilter(DX12/Resources)
 #include "Render_Precompiled.h"
 
 #if SR_ENABLE_DX12

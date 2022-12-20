@@ -33,7 +33,7 @@ bool SAF_Application_Win64::Init()
 		renderApi = SR_API::Vulkan;
 #endif
 
-	if (SR_RenderDevice::Create(renderApi))
+	if (!SR_RenderDevice::Create(renderApi))
 	{
 		SC_ASSERT(false, "Failed to init RenderDevice.");
 		return false;

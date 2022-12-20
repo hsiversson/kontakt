@@ -8,6 +8,8 @@
     #include "SAF_Application_Linux.h"
 #endif
 
+#include "SR_RenderDevice.h"
+
 #include "SF_Manager.h"
 
 SAF_Application* SAF_Application::Create(const SAF_ApplicationPlatform& aPlatform)
@@ -54,11 +56,20 @@ SAF_ReturnCode SAF_Application::Run()
 
 bool SAF_Application::Update(SAF_ReturnCode& aOutReturnCode)
 {
-    SF_Manager* facadeManager = SF_Manager::Get();
+
+    // Post Start Render Frame Task
+    SR_RenderDevice::gInstance->BeginFrame();
+
+    //SF_Manager* facadeManager = SF_Manager::Get();
     // Facade Update
 
     // Facade Render
-    facadeManager->Render();
+    //facadeManager->Render();
+
+    SR_RenderDevice::gInstance->Present();
+    SR_RenderDevice::gInstance->EndFrame();
+
+
 
     aOutReturnCode = SAF_ReturnCode::OK;
     return true;

@@ -3,7 +3,7 @@
 #include "SR_Fence.h"
 #include "SR_CommandList.h"
 
-class SR_CommandQueue
+class SR_CommandQueue : public SR_Resource
 {
 public:
 	SR_CommandQueue();
@@ -11,6 +11,7 @@ public:
 
 	virtual bool Init(const SR_CommandListType& /*aType*/, const char* /*aDebugName*/ = nullptr);
 
+	virtual void SubmitCommandList(SR_CommandList* aCmdList, const char* aEventName = nullptr);
 	virtual void SubmitCommandLists(SR_CommandList** /*aCmdLists*/, uint32 /*aNumCmdLists*/, const char* /*aEventName*/ = nullptr);
 
 	virtual SR_Fence GetNextFence();

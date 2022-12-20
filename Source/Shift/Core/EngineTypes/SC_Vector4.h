@@ -78,6 +78,7 @@ public:
 	SC_TVector4 operator/(const SC_TVector4& aVector) const;
 	SC_TVector4 operator/(const float& aValue) const;
 
+	bool operator==(const SC_TVector4<T>& aVector) const;
 };
 
 template<class T>
@@ -321,6 +322,12 @@ template<class T>
 inline SC_TVector4<T> operator/(const float& aValue, const SC_TVector4<T>& aVector)
 {
 	return SC_TVector4<T>(aValue / aVector.x, aValue / aVector.y, aValue / aVector.z, aValue / aVector.w);
+}
+
+template<class T>
+inline bool SC_TVector4<T>::operator==(const SC_TVector4<T>& aVector) const
+{
+	return x == aVector.x && y == aVector.y && z == aVector.z && w == aVector.w;
 }
 
 using SC_Vector4 = SC_TVector4<float>;

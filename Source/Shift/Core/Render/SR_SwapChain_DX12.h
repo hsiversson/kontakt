@@ -6,7 +6,7 @@
 
 struct IDXGIFactory1;
 struct IDXGIFactory4;
-struct IDXGIFactory6;
+struct IDXGIFactory5;
 struct IDXGISwapChain1;
 struct IDXGISwapChain3;
 
@@ -29,7 +29,7 @@ private:
 private:
 	SR_ComPtr<IDXGIFactory1> mDXGIFactory;
 	SR_ComPtr<IDXGIFactory4> mDXGIFactory4;
-	SR_ComPtr<IDXGIFactory6> mDXGIFactory6;
+	SR_ComPtr<IDXGIFactory5> mDXGIFactory5;
 	SR_ComPtr<IDXGISwapChain1> mDXGISwapChain;
 	SR_ComPtr<IDXGISwapChain3> mDXGISwapChain3;
 

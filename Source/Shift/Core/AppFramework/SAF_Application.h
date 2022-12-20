@@ -15,6 +15,17 @@ enum class SAF_ApplicationPlatform
     Linux
 };
 
+class SAF_ApplicationInterface
+{
+public:
+    SAF_ApplicationInterface() {}
+    virtual ~SAF_ApplicationInterface() {}
+
+    virtual bool Init() = 0;
+    virtual void Update() = 0;
+    virtual void Exit() = 0;
+};
+
 class SAF_Application
 {
 public:

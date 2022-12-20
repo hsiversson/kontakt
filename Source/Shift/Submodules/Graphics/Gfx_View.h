@@ -3,5 +3,8 @@
 
 class Gfx_View
 {
+public:
+
+private:
 
 };

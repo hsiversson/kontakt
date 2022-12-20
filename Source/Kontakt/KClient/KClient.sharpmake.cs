@@ -24,6 +24,7 @@ namespace Kontakt
             aConfig.IncludePaths.Add("[project.SourceRootPath]");
 
             aConfig.AddPrivateDependency<Kontakt.KSharedProject>(aTarget);
+            aConfig.AddPrivateDependency<Shift.Submodules.EditorProject>(aTarget);
             //aConfig.AddPrivateDependency<Shift.Core.AppFrameworkProject>();
             //aConfig.AddPrivateDependency<Shift.Core.RenderProject>();
         }

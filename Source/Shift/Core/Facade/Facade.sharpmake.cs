@@ -21,6 +21,7 @@ namespace Shift.Core
             aConfig.PrecompSource = "Facade_Precompiled.cpp";
 
             aConfig.AddPrivateDependency<Shift.Core.CommonProject>(aTarget);
+            aConfig.AddPublicDependency<Shift.Core.RenderProject>(aTarget);
         }
     }
 }

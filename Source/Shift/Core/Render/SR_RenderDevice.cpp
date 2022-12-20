@@ -12,11 +12,28 @@
 SR_RenderDevice* SR_RenderDevice::gInstance = nullptr;
 
 SR_RenderDevice::SR_RenderDevice()
+	: mEnableDebugMode(false)
+	, mEnableBreakOnError(false)
 {
+	if (SC_CommandLine::HasCommand("debugrender"))
+		mEnableDebugMode = true;
 }
 
 SR_RenderDevice::~SR_RenderDevice()
 {
+}
+
+void SR_RenderDevice::BeginFrame()
+{
+}
+
+void SR_RenderDevice::EndFrame()
+{
+}
+
+void SR_RenderDevice::Present()
+{
+	mCurrentSwapChain->Present();
 }
 
 SC_Ref<SR_TextureResource> SR_RenderDevice::CreateTextureResource(const SR_TextureResourceProperties& /*aTextureResourceProperties*/, const SR_PixelData* /*aInitialData*/, uint32 /*aDataCount*/)
@@ -37,13 +54,13 @@ SC_Ref<SR_BufferResource> SR_RenderDevice::CreateBufferResource()
 	return nullptr;
 }
 
-SC_Ref<SR_BufferView> SR_RenderDevice::CreateBufferView()
+SC_Ref<SR_Buffer> SR_RenderDevice::CreateBufferView()
 {
 	SC_ASSERT(false, "Not Implemented Yet!");
 	return nullptr;
 }
 
-SC_Ref<SR_Shader> SR_RenderDevice::CreateShader()
+SC_Ref<SR_Shader> SR_RenderDevice::CreateShader(const SR_CreateShaderProperties& /*aCreateShaderProperties*/)
 {
 	SC_ASSERT(false, "Not Implemented Yet!");
 	return nullptr;
@@ -61,7 +78,7 @@ SR_CommandQueue* SR_RenderDevice::GetCommandQueue(const SR_CommandListType& /*aT
 	return nullptr;
 }
 
-SR_DescriptorHeap* SR_RenderDevice::GetDescriptorHeap(const SR_DescriptorType& /*aDescriptorType*/) const
+SR_DescriptorHeap* SR_RenderDevice::GetDescriptorHeap(const SR_DescriptorHeapType& /*aDescriptorHeapType*/) const
 {
 	SC_ASSERT(false, "Not Implemented Yet!");
 	return nullptr;
@@ -76,6 +93,21 @@ SC_Ref<SR_SwapChain> SR_RenderDevice::CreateSwapChain(const SR_SwapChainProperti
 const SR_API& SR_RenderDevice::GetAPI() const
 {
 	return mRenderApi;
+}
+
+SR_RootSignature* SR_RenderDevice::GetRootSignature(const SR_RootSignatureType& aType) const
+{
+	return mRootSignatures[static_cast<uint32>(aType)];
+}
+
+SR_ShaderCompiler* SR_RenderDevice::GetShaderCompiler() const
+{
+	return mShaderCompiler;
+}
+
+void SR_RenderDevice::SetCurrentSwapChain(SR_SwapChain* aSwapChain)
+{
+	mCurrentSwapChain = aSwapChain;
 }
 
 bool SR_RenderDevice::Create(const SR_API& aAPIType)

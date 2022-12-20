@@ -39,8 +39,22 @@ enum class SR_ShaderType
 #if SR_ENABLE_RAYTRACING
 	Raytracing,
 #endif
+	COUNT,
+	Unknown = COUNT
+};
+static constexpr uint32 SR_ShaderType_COUNT = static_cast<uint32>(SR_ShaderType::COUNT);
+
+enum class SR_RootSignatureType
+{
+	Graphics,
+	GraphicsMS,
+	Compute,
+#if SR_ENABLE_RAYTRACING
+	Raytracing,
+#endif
 	COUNT
 };
+static constexpr uint32 SR_RootSignatureType_COUNT = static_cast<uint32>(SR_RootSignatureType::COUNT);
 
 enum class SR_CommandListType
 {
@@ -50,6 +64,7 @@ enum class SR_CommandListType
 	COUNT = 3,
 	Unknown = COUNT,
 };
+static constexpr uint32 SR_CommandListType_COUNT = static_cast<uint32>(SR_CommandListType::COUNT);
 
 enum class SR_DescriptorType
 {
@@ -73,6 +88,7 @@ enum class SR_StencilOperator
 	Decrement,
 	COUNT,
 };
+static constexpr uint32 SR_StencilOperator_COUNT = static_cast<uint32>(SR_StencilOperator::COUNT);
 
 enum class SR_ComparisonFunc
 {
@@ -86,6 +102,7 @@ enum class SR_ComparisonFunc
 	Always,
 	COUNT,
 };
+static constexpr uint32 SR_ComparisonFunc_COUNT = static_cast<uint32>(SR_ComparisonFunc::COUNT);
 
 enum class SR_CullMode
 {
@@ -94,6 +111,7 @@ enum class SR_CullMode
 	Back,
 	COUNT,
 };
+static constexpr uint32 SR_CullMode_COUNT = static_cast<uint32>(SR_CullMode::COUNT);
 
 enum class SR_BlendFunc
 {
@@ -104,6 +122,7 @@ enum class SR_BlendFunc
 	Max,
 	COUNT,
 };
+static constexpr uint32 SR_BlendFunc_COUNT = static_cast<uint32>(SR_BlendFunc::COUNT);
 
 enum class SR_BlendMode
 {
@@ -126,6 +145,7 @@ enum class SR_BlendMode
 	OneMinusSrc1Alpha,
 	COUNT,
 };
+static constexpr uint32 SR_BlendMode_COUNT = static_cast<uint32>(SR_BlendMode::COUNT);
 
 enum class SR_ColorWriteMask
 {
@@ -155,6 +175,7 @@ enum class SR_WrapMode
 	Border,
 	COUNT
 };
+static constexpr uint32 SR_WrapMode_COUNT = static_cast<uint32>(SR_WrapMode::COUNT);
 
 enum class SR_FilterMode
 {
@@ -164,6 +185,7 @@ enum class SR_FilterMode
 	Max,
 	COUNT
 };
+static constexpr uint32 SR_FilterMode_COUNT = static_cast<uint32>(SR_FilterMode::COUNT);
 
 enum class SR_ResourceType
 {
@@ -180,4 +202,38 @@ enum class SR_ShadingRate
 	VRS_1X2,
 	VRS_2X1,
 	VRS_2X2,
+};
+
+enum class SR_DepthClearFlags
+{
+	Depth,
+	Stencil,
+	All,
+};
+
+enum SR_ResourceStates : uint32
+{
+	SR_ResourceState_GenericRead,
+	SR_ResourceState_Present,
+	SR_ResourceState_RenderTarget,
+	SR_ResourceState_ShaderRead,
+	SR_ResourceState_ShaderWrite,
+	SR_ResourceState_Indirect,
+	SR_ResourceState_Readback,
+	SR_ResourceState_CopyDst,
+	SR_ResourceState_CopySrc,
+};
+
+enum SR_BufferBindFlag : uint32
+{
+	SR_BufferBindFlag_None = 0,
+	SR_BufferBindFlag_Staging = 0x1,
+	SR_BufferBindFlag_VertexBuffer = 0x2,
+	SR_BufferBindFlag_IndexBuffer = 0x4,
+	SR_BufferBindFlag_ConstantBuffer = 0x8,
+	SR_BufferBindFlag_Buffer = 0x10,
+	SR_BufferBindFlag_IndirectBuffer = 0x20,
+	SR_BufferBindFlag_RaytracingBuffer = 0x40,
+	SR_BufferBindFlag_Readback = 0x80,
+	SR_BufferBindFlag_COUNT = 6,
 };

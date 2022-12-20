@@ -13,8 +13,8 @@ public:
 
 	bool Init();
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(const SR_TextureBindType& aDescriptorType) const;
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(const SR_TextureBindType& aDescriptorType) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(const SR_TextureDescriptorType& aDescriptorType) const;
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(const SR_TextureDescriptorType& aDescriptorType) const;
 
 private:
 	bool InitSRV();

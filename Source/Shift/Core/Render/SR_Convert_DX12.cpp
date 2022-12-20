@@ -4,6 +4,7 @@
 #if SR_ENABLE_DX12
 #include "SR_Convert_DX12.h"
 #include "SR_TextureResource.h"
+#include "SR_BufferResource.h"
 
 SR_Format SR_ConvertFormat_DX12(DXGI_FORMAT aFormat)
 {
@@ -204,9 +205,22 @@ D3D12_RESOURCE_DESC SR_GetResourceDesc_DX12(const SR_TextureResourceProperties& 
 	return resourceDesc;
 }
 
-D3D12_RESOURCE_DESC SR_GetResourceDesc_DX12(const SR_BufferResourceProperties& /*aProperties*/)
+D3D12_RESOURCE_DESC SR_GetResourceDesc_DX12(const SR_BufferResourceProperties& aProperties)
 {
 	D3D12_RESOURCE_DESC resourceDesc = {};
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resourceDesc.Width = aProperties.mElementSize * aProperties.mElementCount;
+	resourceDesc.Height = 1;
+	resourceDesc.DepthOrArraySize = 1;
+	resourceDesc.MipLevels = 1;
+	resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+	resourceDesc.SampleDesc.Count = 1;
+	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	if (aProperties.mWritable)
+		resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
 	return resourceDesc;
 }
 
@@ -223,6 +237,225 @@ D3D12_RESOURCE_DIMENSION SR_ConvertDimension_DX12(const SR_ResourceType& aType)
 	default:
 		return D3D12_RESOURCE_DIMENSION_UNKNOWN;
 	}
+}
+
+D3D12_CULL_MODE SR_ConvertCullMode_DX12(SR_CullMode aCullMode)
+{
+	switch (aCullMode)
+	{
+	case SR_CullMode::None:		return D3D12_CULL_MODE_NONE;
+	case SR_CullMode::Front:	return D3D12_CULL_MODE_FRONT;
+	case SR_CullMode::Back:		return D3D12_CULL_MODE_BACK;
+	default:
+		break;
+	}
+	SC_ASSERT(false, "Unknown cull mode DX12");
+	return D3D12_CULL_MODE_NONE;
+}
+
+D3D12_COMPARISON_FUNC SR_ConvertComparisonFunc_DX12(SR_ComparisonFunc aComparisonFunc)
+{
+	switch (aComparisonFunc)
+	{
+	case SR_ComparisonFunc::Never:			return D3D12_COMPARISON_FUNC_NEVER;
+	case SR_ComparisonFunc::Less:			return D3D12_COMPARISON_FUNC_LESS;
+	case SR_ComparisonFunc::Equal:			return D3D12_COMPARISON_FUNC_EQUAL;
+	case SR_ComparisonFunc::LessEqual:		return D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	case SR_ComparisonFunc::Greater:		return D3D12_COMPARISON_FUNC_GREATER;
+	case SR_ComparisonFunc::NotEqual:		return D3D12_COMPARISON_FUNC_NOT_EQUAL;
+	case SR_ComparisonFunc::GreaterEqual:	return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+	case SR_ComparisonFunc::Always:			return D3D12_COMPARISON_FUNC_ALWAYS;
+	default:
+		break;
+	}
+	SC_ASSERT(false, "Unknown comparison function DX12");
+	return D3D12_COMPARISON_FUNC_NEVER;
+}
+
+D3D12_STENCIL_OP SR_ConvertStencilOperator_DX12(SR_StencilOperator aStencilOperator)
+{
+	switch (aStencilOperator)
+	{
+	case SR_StencilOperator::Keep:				return D3D12_STENCIL_OP_KEEP;
+	case SR_StencilOperator::Zero:				return D3D12_STENCIL_OP_ZERO;
+	case SR_StencilOperator::Replace:			return D3D12_STENCIL_OP_REPLACE;
+	case SR_StencilOperator::IncrementSaturate: return D3D12_STENCIL_OP_INCR_SAT;
+	case SR_StencilOperator::DecrementSaturate: return D3D12_STENCIL_OP_DECR_SAT;
+	case SR_StencilOperator::Invert:			return D3D12_STENCIL_OP_INVERT;
+	case SR_StencilOperator::Increment:			return D3D12_STENCIL_OP_INCR;
+	case SR_StencilOperator::Decrement:			return D3D12_STENCIL_OP_DECR;
+	default:
+		break;
+	}
+	SC_ASSERT(false, "Unknown stencil operator DX12");
+	return D3D12_STENCIL_OP_KEEP;
+}
+
+D3D12_BLEND SR_ConvertBlendMode_DX12(SR_BlendMode aBlendMode)
+{
+	switch (aBlendMode)
+	{
+	case SR_BlendMode::Zero:				return D3D12_BLEND_ZERO;
+	case SR_BlendMode::One:					return D3D12_BLEND_ONE;
+	case SR_BlendMode::SrcColor:			return D3D12_BLEND_SRC_COLOR;
+	case SR_BlendMode::OneMinusSrcColor:	return D3D12_BLEND_INV_SRC_COLOR;
+	case SR_BlendMode::SrcAlpha:			return D3D12_BLEND_SRC_ALPHA;
+	case SR_BlendMode::OneMinusSrcAlpha:	return D3D12_BLEND_INV_SRC_ALPHA;
+	case SR_BlendMode::DstAlpha:			return D3D12_BLEND_DEST_ALPHA;
+	case SR_BlendMode::OneMinusDstAlpha:	return D3D12_BLEND_INV_DEST_ALPHA;
+	case SR_BlendMode::DstColor:			return D3D12_BLEND_DEST_COLOR;
+	case SR_BlendMode::OneMinusDstColor:	return D3D12_BLEND_INV_DEST_COLOR;
+	case SR_BlendMode::SrcAlphaSaturate:	return D3D12_BLEND_SRC_ALPHA_SAT;
+	case SR_BlendMode::BlendFactor:			return D3D12_BLEND_BLEND_FACTOR;
+	case SR_BlendMode::OneMinusBlendFactor: return D3D12_BLEND_INV_BLEND_FACTOR;
+	case SR_BlendMode::Src1Color:			return D3D12_BLEND_SRC1_COLOR;
+	case SR_BlendMode::OneMinusSrc1Color:	return D3D12_BLEND_INV_SRC1_COLOR;
+	case SR_BlendMode::Src1Alpha:			return D3D12_BLEND_SRC1_ALPHA;
+	case SR_BlendMode::OneMinusSrc1Alpha:	return D3D12_BLEND_INV_SRC1_ALPHA;
+	default:
+		break;
+	}
+	SC_ASSERT(false, "Unknown blend mode DX12");
+	return D3D12_BLEND_ZERO;
+}
+
+D3D12_BLEND_OP SR_ConvertBlendFunc_DX12(SR_BlendFunc aBlendFunc)
+{
+	switch (aBlendFunc)
+	{
+	case SR_BlendFunc::Add:				return D3D12_BLEND_OP_ADD;
+	case SR_BlendFunc::Subtract:		return D3D12_BLEND_OP_SUBTRACT;
+	case SR_BlendFunc::ReverseSubtract: return D3D12_BLEND_OP_REV_SUBTRACT;
+	case SR_BlendFunc::Min:				return D3D12_BLEND_OP_MIN;
+	case SR_BlendFunc::Max:				return D3D12_BLEND_OP_MAX;
+	default:
+		break;
+	}
+	SC_ASSERT(false, "Unknown blend func DX12");
+	return D3D12_BLEND_OP_ADD;
+}
+
+UINT8 SR_ConvertColorWriteMask_DX12(uint8 aWriteMask)
+{
+	UINT8 mask = 0;
+	if (aWriteMask & (uint8)SR_ColorWriteMask::Red)
+		mask |= D3D12_COLOR_WRITE_ENABLE_RED;
+	if (aWriteMask & (uint8)SR_ColorWriteMask::Green)
+		mask |= D3D12_COLOR_WRITE_ENABLE_GREEN;
+	if (aWriteMask & (uint8)SR_ColorWriteMask::Blue)
+		mask |= D3D12_COLOR_WRITE_ENABLE_BLUE;
+	if (aWriteMask & (uint8)SR_ColorWriteMask::Alpha)
+		mask |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
+	return mask;
+}
+
+SR_ShaderModel SR_ConvertShaderModel_DX12(D3D_SHADER_MODEL aShaderModel)
+{
+	switch (aShaderModel)
+	{
+	case D3D_SHADER_MODEL_6_0: return SR_ShaderModel::SM_6_0;
+	case D3D_SHADER_MODEL_6_1: return SR_ShaderModel::SM_6_1;
+	case D3D_SHADER_MODEL_6_2: return SR_ShaderModel::SM_6_2;
+	case D3D_SHADER_MODEL_6_3: return SR_ShaderModel::SM_6_3;
+	case D3D_SHADER_MODEL_6_4: return SR_ShaderModel::SM_6_4;
+	case D3D_SHADER_MODEL_6_5: return SR_ShaderModel::SM_6_5;
+	case D3D_SHADER_MODEL_6_6: return SR_ShaderModel::SM_6_6;
+	case D3D_SHADER_MODEL_6_7: return SR_ShaderModel::SM_6_7;
+	case D3D_SHADER_MODEL_5_1: return SR_ShaderModel::SM_5_1;
+	default:				   return SR_ShaderModel::Unknown;
+	}
+}
+
+D3D_SHADER_MODEL SR_ConvertShaderModel_DX12(SR_ShaderModel aShaderModel)
+{
+	switch (aShaderModel)
+	{
+	case SR_ShaderModel::SM_6_0: return D3D_SHADER_MODEL_6_0;
+	case SR_ShaderModel::SM_6_1: return D3D_SHADER_MODEL_6_1;
+	case SR_ShaderModel::SM_6_2: return D3D_SHADER_MODEL_6_2;
+	case SR_ShaderModel::SM_6_3: return D3D_SHADER_MODEL_6_3;
+	case SR_ShaderModel::SM_6_4: return D3D_SHADER_MODEL_6_4;
+	case SR_ShaderModel::SM_6_5: return D3D_SHADER_MODEL_6_5;
+	case SR_ShaderModel::SM_6_6: return D3D_SHADER_MODEL_6_6;
+	case SR_ShaderModel::Unknown:
+	case SR_ShaderModel::SM_5_1:
+	default:
+		return D3D_SHADER_MODEL_5_1;
+	}
+}
+
+D3D12_FILTER SR_ConvertFilter_DX12(SR_FilterMode aMinFilter, SR_FilterMode aMagFilter, SR_FilterMode aMipFilter, SR_ComparisonFunc aCompareFunc, uint32 aAnisotropy)
+{
+	SR_FilterMode filterModes[3] = { aMinFilter, aMagFilter, aMipFilter };
+	D3D12_FILTER_TYPE filterTypes[3];
+
+	int reduction = -1;
+	if (aCompareFunc != SR_ComparisonFunc::Never)
+		reduction = D3D12_FILTER_REDUCTION_TYPE_COMPARISON;
+
+	for (uint32 i = 0; i != 3; ++i)
+	{
+		const SR_FilterMode& filter = filterModes[i];
+
+		switch (filter)
+		{
+		case SR_FilterMode::Point:
+			filterTypes[i] = D3D12_FILTER_TYPE_POINT;
+			break;
+		case SR_FilterMode::Linear:
+		case SR_FilterMode::Min:
+		case SR_FilterMode::Max:
+			filterTypes[i] = D3D12_FILTER_TYPE_LINEAR;
+			break;
+		default:
+			SC_ASSERT(false);
+		}
+
+		switch (filter)
+		{
+		case SR_FilterMode::Point:
+			break;
+		case SR_FilterMode::Linear:
+			SC_ASSERT(reduction == -1 || reduction == D3D12_FILTER_REDUCTION_TYPE_STANDARD || reduction == D3D12_FILTER_REDUCTION_TYPE_COMPARISON);
+			if (reduction != D3D12_FILTER_REDUCTION_TYPE_COMPARISON)
+				reduction = D3D12_FILTER_REDUCTION_TYPE_STANDARD;
+			break;
+		case SR_FilterMode::Min:
+			SC_ASSERT(reduction == -1 || reduction == D3D12_FILTER_REDUCTION_TYPE_MINIMUM);
+			reduction = D3D12_FILTER_REDUCTION_TYPE_MINIMUM;
+			break;
+		case SR_FilterMode::Max:
+			SC_ASSERT(reduction == -1 || reduction == D3D12_FILTER_REDUCTION_TYPE_MAXIMUM);
+			reduction = D3D12_FILTER_REDUCTION_TYPE_MAXIMUM;
+			break;
+		default:
+			SC_ASSERT(false);
+		}
+	}
+
+	if (reduction == -1)
+		reduction = D3D12_FILTER_REDUCTION_TYPE_STANDARD;
+
+	uint32 resultFilter = D3D12_ENCODE_BASIC_FILTER(filterTypes[0], filterTypes[1], filterTypes[2], reduction);
+
+	if (aAnisotropy > 1 && (resultFilter == D3D12_FILTER_MIN_MAG_MIP_LINEAR /*|| aAnisotropy != SRSamplerProperties::gDefaultAnisotropy*/))
+		resultFilter |= D3D12_ANISOTROPIC_FILTERING_BIT;
+
+	return D3D12_FILTER(resultFilter);
+}
+
+D3D12_TEXTURE_ADDRESS_MODE SR_ConvertWrapMode_DX12(SR_WrapMode aWrapMode)
+{
+	switch (aWrapMode)
+	{
+	case SR_WrapMode::Wrap:			return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	case SR_WrapMode::Clamp:		return D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	case SR_WrapMode::Mirror:		return D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
+	case SR_WrapMode::MirrorOnce:	return D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
+	case SR_WrapMode::Border:		return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	}
+	SC_ASSERT(false, "Unknown wrap mode");
+	return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 }
 
 #endif

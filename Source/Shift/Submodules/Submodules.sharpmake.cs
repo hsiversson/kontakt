@@ -1,5 +1,6 @@
 [module: Sharpmake.Include("GameEntity/GameEntity.sharpmake.cs")]
 [module: Sharpmake.Include("Graphics/Graphics.sharpmake.cs")]
+[module: Sharpmake.Include("Editor/Editor.sharpmake.cs")]
 
 namespace Shift.Submodules
 {
