@@ -6,7 +6,7 @@
 #include "SR_CommandList.h"
 #include "SR_PipelineState.h"
 
-SR_RenderContext* SR_RenderContext::gCurrentContext = nullptr;
+thread_local SR_RenderContext* SR_RenderContext::gCurrentContext = nullptr;
 
 SR_RenderContext::SR_RenderContext()
 {

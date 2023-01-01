@@ -1,0 +1,41 @@
+
+struct VertexInput
+{
+    float4 mPosition;
+    float2 mUV;
+};
+
+struct VertexOutput
+{
+    float4 mClipPosition : SV_POSITION;
+    float2 mUV : UV;
+};
+
+VertexOutput MainVS(in VertexInput aInput)
+{
+    VertexOutput out;
+
+    out.mClipPosition = aInput.mPosition;
+    out.mUV = aInput.mUV;
+
+    return out;
+}
+
+float GetMedian(float3 aRGB)
+{
+    return max(min(aRGB.r, aRGB.g), min(max(aRGB.r, aRGB.g), b));
+}
+
+Texture2D FontSDF : register(t0);
+float4 MainPS(in VertexOutput aInput) : SV_TARGET0
+{
+    float4 msdfSample = FontSDF.SampleLevel(gBilinearSampler, aInput.mUV, 0);
+    float sd = GetMedian(msdfSample.rgb);
+    float screenPixelDistance = 0.0f;
+    float opacity = saturate(screenPixelDistance + 0.5f);
+    
+    const float3 backgroundColor;
+    const float3 foregroundColor;
+
+    return lerp(backgroundColor, foregroundColor, opacity);
+}

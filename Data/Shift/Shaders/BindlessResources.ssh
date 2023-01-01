@@ -1,0 +1,77 @@
+#pragma once 
+#if IS_DXIL
+
+Texture2D GetTexture2D(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+template<typename T>
+Texture2D<T> GetTexture2D(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+template<typename T>
+RWTexture2D<T> GetRWTexture2D(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+template<typename T>
+Texture3D<T> GetTexture3D(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+template<typename T>
+RWTexture3D<T> GetRWTexture3D(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+TextureCube GetTextureCube(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+template<typename T>
+StructuredBuffer<T> GetStructuredBuffer(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+template<typename T>
+RWStructuredBuffer<T> GetRWStructuredBuffer(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+template<typename T>
+Buffer<T> GetBuffer(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+template<typename T>
+RWBuffer<T> GetRWBuffer(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+ByteAddressBuffer GetByteBuffer(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+RWByteAddressBuffer GetRWByteBuffer(uint aResourceIndex)
+{
+    return ResourceDescriptorHeap[NonUniformResourceIndex(aResourceIndex)];
+}
+
+
+#elif IS_SPIRV
+
+#endif
+
+template<typename T>
+T SR_Load(ByteAddressBuffer aBuffer, in uint aOffset)
+{
+    T data = aBuffer.Load<T>(aOffset);
+    return data;
+}

@@ -10,6 +10,8 @@ public:
 
 	bool Init(void* aWindowHandle);
 
+	void Update();
+
 	void Render();
 
 	static bool Create();

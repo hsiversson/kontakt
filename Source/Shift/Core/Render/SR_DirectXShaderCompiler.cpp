@@ -7,31 +7,30 @@
 
 static const wchar_t* GetShaderModelVersion()
 {
-	//switch (SR_RenderDevice::gInstance->GetSupportCaps().mHighestShaderModel)
-	//{
-	//case SR_ShaderModel::SM_5_1:
-	//	return L"5_1";
-	//case SR_ShaderModel::SM_6_0:
-	//	return L"6_0";
-	//case SR_ShaderModel::SM_6_1:
-	//	return L"6_1";
-	//case SR_ShaderModel::SM_6_2:
-	//	return L"6_2";
-	//case SR_ShaderModel::SM_6_3:
-	//	return L"6_3";
-	//case SR_ShaderModel::SM_6_4:
-	//	return L"6_4";
-	//case SR_ShaderModel::SM_6_5:
-	//	return L"6_5";
-	//case SR_ShaderModel::SM_6_6:
-	//	return L"6_6";
-	//case SR_ShaderModel::SM_6_7:
-	//	return L"6_7";
-	//case SR_ShaderModel::Unknown:
-	//default:
-	//	return L"6_7";
-	//	//return L"Unknown SM version.";
-	//}
+	switch (SR_RenderDevice::gInstance->mCaps.mHighestShaderModel)
+	{
+	case SR_ShaderModel::SM_5_1:
+		return L"5_1";
+	case SR_ShaderModel::SM_6_0:
+		return L"6_0";
+	case SR_ShaderModel::SM_6_1:
+		return L"6_1";
+	case SR_ShaderModel::SM_6_2:
+		return L"6_2";
+	case SR_ShaderModel::SM_6_3:
+		return L"6_3";
+	case SR_ShaderModel::SM_6_4:
+		return L"6_4";
+	case SR_ShaderModel::SM_6_5:
+		return L"6_5";
+	case SR_ShaderModel::SM_6_6:
+		return L"6_6";
+	case SR_ShaderModel::SM_6_7:
+		return L"6_7";
+	case SR_ShaderModel::Unknown:
+	default:
+		return L"Unknown SM version.";
+	}
 }
 
 static std::wstring GetTargetProfile(const SR_ShaderType& aShaderType)
@@ -139,22 +138,17 @@ SR_DirectXShaderCompiler::SR_DirectXShaderCompiler(const Backend& aBackend)
 	, mSkipOptimizations(false)
 	, mDebugShaders(false)
 {
-	if (SC_CommandLine::HasCommand("debugshaders"))
+	if (SC_CommandLine::HasArgument("debugshaders"))
 		mDebugShaders = true;
 
-	if (SC_CommandLine::HasCommand("skipshaderoptimizations"))
+	if (SC_CommandLine::HasArgument("skipshaderoptimizations"))
 		mSkipOptimizations = true;
 
 	if (!mSkipOptimizations)
 	{
-		if (SC_CommandLine::HasArgument("shaderoptimizationlevel", "0"))
-			mShaderOptimizationLevel = 0;
-		else if (SC_CommandLine::HasArgument("shaderoptimizationlevel", "1"))
-			mShaderOptimizationLevel = 1;
-		else if (SC_CommandLine::HasArgument("shaderoptimizationlevel", "2"))
-			mShaderOptimizationLevel = 2;
-		else if (SC_CommandLine::HasArgument("shaderoptimizationlevel", "3"))
-			mShaderOptimizationLevel = 3;
+		int optimizationLevel = 3;
+		SC_CommandLine::GetIntValue("shaderoptimizationlevel", optimizationLevel);
+		mShaderOptimizationLevel = (uint8)optimizationLevel;
 	}
 
 	const char* dllPath = nullptr;
@@ -182,9 +176,9 @@ SR_DirectXShaderCompiler::~SR_DirectXShaderCompiler()
 
 }
 
-bool SR_DirectXShaderCompiler::CompileFromFile(const SR_ShaderCompileArgs& aArgs, SR_ShaderByteCode& aOutResult, SR_ShaderMetaData* aOutMetaData)
+bool SR_DirectXShaderCompiler::CompileFromFile(const SR_ShaderCompileArgs& /*aArgs*/, SR_ShaderByteCode& /*aOutResult*/, SR_ShaderMetaData* /*aOutMetaData*/)
 {
-
+	return false;
 }
 
 bool SR_DirectXShaderCompiler::CompileFromString(const std::string& aShadercode, const SR_ShaderCompileArgs& aArgs, SR_ShaderByteCode& aOutResult, SR_ShaderMetaData* aOutMetaData, const std::string& aBaseDirectory)
@@ -332,6 +326,7 @@ bool SR_DirectXShaderCompiler::CompileFromString(const std::string& aShadercode,
 	//		}
 	//	}
 	//}
+	return true;
 }
 
 void SR_DirectXShaderCompiler::SetupArgs(SC_Array<LPCWSTR>& aOutArgs, uint32 aCompilerFlags)

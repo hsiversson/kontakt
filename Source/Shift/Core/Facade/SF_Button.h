@@ -12,5 +12,9 @@ public:
 	void Render() override;
 
 private:
+	void Init();
+
+	void OnClick();
+	void OnMouseEvent();
 };
 

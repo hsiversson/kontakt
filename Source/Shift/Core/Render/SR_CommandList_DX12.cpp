@@ -59,6 +59,17 @@ bool SR_CommandList_DX12::Init()
 	return true;
 }
 
+void SR_CommandList_DX12::Open()
+{
+	mD3D12CommandAllocator->Reset();
+	mD3D12CommandList->Reset(mD3D12CommandAllocator.Get(), nullptr);
+}
+
+void SR_CommandList_DX12::Close()
+{
+	mD3D12CommandList->Close();
+}
+
 void SR_CommandList_DX12::DrawInstanced(uint32 aVertexCount, uint32 aInstanceCount, uint32 aStartVertex /*= 0*/, uint32 aStartInstance /*= 0*/)
 {
     mD3D12CommandList->DrawInstanced(aVertexCount, aInstanceCount, aStartVertex, aStartInstance);

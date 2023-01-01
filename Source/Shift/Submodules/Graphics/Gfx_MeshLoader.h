@@ -7,14 +7,13 @@ class Gfx_MeshLoader
 public:
 	static constexpr const char* gFileExtension = "smf";
 
-	static bool Save(const std::string& aFileName, const Gfx_MeshCreateProperties& aCreateProperties);
-	static bool Load(const std::string& aFileName, const Gfx_MeshCreateProperties& aOutCreateProperties);
+	static bool Save(const std::string& aFilename, const Gfx_MeshCreateProperties& aCreateProperties);
+	static bool Load(const std::string& aFilename, Gfx_MeshCreateProperties& aOutCreateProperties);
 	
 private:
-	static constexpr uint32 gVersion = 1;
-
 	struct FileTOC
 	{
+		uint32 mSMFMagic;
 		uint32 mVersion;
 		bool mHasMeshletData;
 	};
@@ -31,6 +30,5 @@ private:
 		uint32 mVertexIndicesStride;
 		uint32 mNumVertexAttributes;
 	};
-
 };
 

@@ -13,6 +13,14 @@ SR_CommandList::~SR_CommandList()
 
 }
 
+void SR_CommandList::Open()
+{
+}
+
+void SR_CommandList::Close()
+{
+}
+
 void SR_CommandList::DrawInstanced(uint32 /*aVertexCount*/, uint32 /*aInstanceCount*/, uint32 /*aStartVertex*/ /*= 0*/, uint32 /*aStartInstance*/ /*= 0*/)
 {
 

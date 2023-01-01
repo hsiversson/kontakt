@@ -1,6 +1,7 @@
 ﻿
 MSBuild_vs2022_win64_Debug_MSVC_Disabled_Lib_Default|x64
   ..\..\Shift\External\AMD\ags\ags_lib\lib\amd_ags_x64.dll
+  ..\..\Shift\External\Assimp\bin\assimp-vc143-mt.dll
   ..\..\Shift\External\D3D12\bin\D3D12Core.dll
   ..\..\Shift\External\D3D12\bin\d3d12SDKLayers.dll
   ..\..\Shift\External\DirectXShaderCompiler\bin\dxcompiler.dll
@@ -8,6 +9,7 @@ MSBuild_vs2022_win64_Debug_MSVC_Disabled_Lib_Default|x64
 
 MSBuild_vs2022_win64_Release_MSVC_Disabled_Lib_Default|x64
   ..\..\Shift\External\AMD\ags\ags_lib\lib\amd_ags_x64.dll
+  ..\..\Shift\External\Assimp\bin\assimp-vc143-mt.dll
   ..\..\Shift\External\D3D12\bin\D3D12Core.dll
   ..\..\Shift\External\D3D12\bin\d3d12SDKLayers.dll
   ..\..\Shift\External\DirectXShaderCompiler\bin\dxcompiler.dll
@@ -15,6 +17,7 @@ MSBuild_vs2022_win64_Release_MSVC_Disabled_Lib_Default|x64
 
 MSBuild_vs2022_win64_Shipping_MSVC_Disabled_Lib_Default|x64
   ..\..\Shift\External\AMD\ags\ags_lib\lib\amd_ags_x64.dll
+  ..\..\Shift\External\Assimp\bin\assimp-vc143-mt.dll
   ..\..\Shift\External\D3D12\bin\D3D12Core.dll
   ..\..\Shift\External\D3D12\bin\d3d12SDKLayers.dll
   ..\..\Shift\External\DirectXShaderCompiler\bin\dxcompiler.dll

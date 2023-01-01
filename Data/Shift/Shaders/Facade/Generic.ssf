@@ -1,0 +1,27 @@
+
+struct VertexInput
+{
+    float4 mPosition;
+    float4 mColor;
+};
+
+struct VertexOutput
+{
+    float4 mClipPosition : SV_POSITION;
+    float4 mColor : COLOR;
+};
+
+VertexOutput MainVS(in VertexInput aInput)
+{
+    VertexOutput out;
+
+    out.mClipPosition = aInput.mPosition;
+    out.mColor = aInput.mColor; 
+
+    return out;
+}
+
+float4 MainPS(in VertexOutput aInput) : SV_TARGET0
+{
+    return aInput.mColor;
+}

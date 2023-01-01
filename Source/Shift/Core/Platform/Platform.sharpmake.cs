@@ -19,6 +19,8 @@ namespace Shift.Core
 
             aConfig.PrecompHeader = "Platform_Precompiled.h";
             aConfig.PrecompSource = "Platform_Precompiled.cpp";
+
+            aConfig.Defines.Add("_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING");
         }
     }
 }

@@ -56,10 +56,11 @@ void SR_SwapChain_DX12::Present()
 	if (!vsync && (mSwapChainFlags & DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING))
 		flags |= DXGI_PRESENT_ALLOW_TEARING;
 
-	uint32 interval = 0;
+	uint32 interval = vsync ? 1 : 0;
 	/*HRESULT hr =*/ mDXGISwapChain->Present(interval, flags);
 
 	mCurrentIndex = mDXGISwapChain3->GetCurrentBackBufferIndex();
+	mCurrentResource = &mBackbufferResources[mCurrentIndex];
 }
 
 bool SR_SwapChain_DX12::CreateSwapChain()
@@ -82,7 +83,7 @@ bool SR_SwapChain_DX12::CreateSwapChain()
 	desc.Stereo = false;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	if (!allowTearing)
+	if (allowTearing)
 		desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 	mSwapChainFlags = desc.Flags; // Store flags for internal swapchain updates
@@ -141,12 +142,11 @@ bool SR_SwapChain_DX12::CreateResources()
 		framebufferProperties.mNumMips = desc.MipLevels;
 		framebufferProperties.mFormat = SR_ConvertFormat_DX12(desc.Format);
 		framebufferProperties.mAllowRenderTarget = true;
-		framebufferProperties.mAllowWrites = true;
 		framebufferProperties.mType = SR_ResourceType::Texture2D;
 		mBackbufferResources[i].mResource = new SR_TextureResource_DX12(framebufferProperties, res);
-		//mBackbufferResources[i].mResource->mLatestResourceState = SR_ResourceState_Present;
+		mBackbufferResources[i].mResource->mResourceTrackingDX12.mD3D12CurrentState = D3D12_RESOURCE_STATE_PRESENT;
 
-		SR_TextureProperties texProperties(framebufferProperties.mFormat, SR_TextureBindFlag_Texture | SR_TextureBindFlag_RWTexture | SR_TextureBindFlag_RenderTarget);
+		SR_TextureProperties texProperties(framebufferProperties.mFormat, SR_TextureBindFlag_Texture | SR_TextureBindFlag_RenderTarget);
 		mBackbufferResources[i].mTexture = SR_RenderDevice_DX12::gInstance->CreateTexture(texProperties, mBackbufferResources[i].mResource);
 	}
 

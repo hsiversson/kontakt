@@ -34,6 +34,7 @@ public:
 	void Reserve(uint32 aNumToReserve);
 	void Respace(uint32 aNumToRespace);
 	void AllocateAdditional(uint32 aNumToAlloc);
+	void Compact(); // Will compact the array to remove unused allocated space.
 
 	T& First();
 	const T& First() const;
@@ -248,6 +249,25 @@ inline void SC_Array<T>::AllocateAdditional(uint32 aNumToAlloc)
 	uint32 newAllocatedCount = SC_Max(increaseCount, requestedCount);
 
 	Reserve(newAllocatedCount);
+}
+
+template<class T>
+inline void SC_Array<T>::Compact()
+{
+	if (mCurrentItemCount == mItemCapacity)
+		return;
+
+	const uint32 requiredSize = mCurrentItemCount;
+
+	T* oldData = mInternalItemBuffer;
+	mInternalItemBuffer = Allocate(requiredSize);
+	mItemCapacity = requiredSize;
+
+	if (oldData)
+	{
+		SC_RelocateN(mInternalItemBuffer, oldData, mCurrentItemCount);
+		Deallocate(oldData);
+	}
 }
 
 template <class T>

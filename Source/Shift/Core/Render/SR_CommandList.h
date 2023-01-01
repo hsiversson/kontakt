@@ -15,6 +15,9 @@ public:
 	SR_CommandList(const SR_CommandListType& aType);
 	virtual ~SR_CommandList();
 
+	virtual void Open();
+	virtual void Close();
+
 	virtual void DrawInstanced(uint32 aVertexCount, uint32 aInstanceCount, uint32 aStartVertex = 0, uint32 aStartInstance = 0);
 	virtual void DrawIndexedInstanced(uint32 aIndexCount, uint32 aInstanceCount, uint32 aStartIndex = 0, uint32 aStartVertex = 0, uint32 aStartInstance = 0);
 

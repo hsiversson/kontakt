@@ -2,6 +2,7 @@
 #pragma once
 
 #include "SR_TextureResource.h"
+#include "SR_Descriptor.h"
 
 enum SR_TextureBindFlags
 {

@@ -17,6 +17,16 @@ struct SR_TextureSection
 
 struct SR_TextureResourceProperties
 {
+	SR_TextureResourceProperties() 
+		: mFormat(SR_Format::UNKNOWN)
+		, mNumMips(0)
+		, mArraySize(0)
+		, mType(SR_ResourceType::Unknown)
+		, mAllowRenderTarget(false)
+		, mAllowDepthStencil(false)
+		, mAllowWrites(false)
+	{}
+
 	SC_Vector3i mSize;
 	SR_Format mFormat;
 	uint16 mNumMips;

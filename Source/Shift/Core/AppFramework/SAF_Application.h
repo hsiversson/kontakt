@@ -29,7 +29,7 @@ public:
 class SAF_Application
 {
 public:
-    static SAF_Application* Create(const SAF_ApplicationPlatform& aPlatform);
+    static SAF_Application* Create(const SAF_ApplicationPlatform& aPlatform, SAF_ApplicationInterface* aApplicationInterface);
     
 public:
     SAF_Application();
@@ -40,6 +40,8 @@ public:
     SAF_ReturnCode Run();
 
 protected:
+    void SetInterface(SAF_ApplicationInterface* aApplicationInterface);
     virtual bool Update(SAF_ReturnCode& aOutReturnCode);
 
+    SAF_ApplicationInterface* mApplicationInterface;
 };

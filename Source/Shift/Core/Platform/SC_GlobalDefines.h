@@ -34,10 +34,8 @@
 	#define IS_LINUX_PLATFORM			(1)
 #endif
 
-#if IS_WINDOWS_PLATFORM
-	#if ENABLE_EDITOR				
-		#define IS_EDITOR_BUILD			(1)
-	#endif
+#if IS_WINDOWS_PLATFORM		
+	#define IS_EDITOR_BUILD				(1)
 #endif
 
 // Compiler

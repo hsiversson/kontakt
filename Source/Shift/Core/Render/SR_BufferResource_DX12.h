@@ -4,7 +4,7 @@
 #if SR_ENABLE_DX12
 #include "SR_BufferResource.h"
 
-class SR_BufferResource_DX12 final : SR_BufferResource
+class SR_BufferResource_DX12 final : public SR_BufferResource
 {
 public:
 	SR_BufferResource_DX12(const SR_BufferResourceProperties& aProperties);

@@ -1,0 +1,21 @@
+#include "Common.ssh"
+//#include "SceneConstants.ssh"
+
+struct PixelShaderInput
+{
+    float4 mClipPosition : SV_POSITION;
+    float3 mViewPosition : View_POSITION;
+    float3 mWorldPosition : WORLD_POSITION;
+    float3 mPrevWorldPosition : PREV_WORLD_POSITION;
+    float3 mNormal : NORMAL0;
+    float3 mTangent : TANGENT;
+    float3 mBitangent : BITANGENT;
+    float2 mUV : UV0;
+    nointerpolation uint mMaterialIndex : MATERIAL_INDEX;
+};
+
+float4 Main(in PixelShaderInput aInput) : SV_TARGET0
+{
+    float3 color = float3(1.0f, 0.0f, 1.0f);
+    return float4(color, 1.0f);
+}

@@ -154,7 +154,7 @@ bool SR_Texture_DX12::InitUAV()
 		return false;
 	}
 
-	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::UAV)->Alloc();
+	SR_Descriptor descriptor = SR_RenderDevice_DX12::gInstance->GetDescriptorHeap(SR_DescriptorHeapType::CBV_SRV_UAV)->Alloc();
 	SR_RenderDevice_DX12::gInstance->GetD3D12Device()->CreateUnorderedAccessView(mDX12Resource->mD3D12Resource, nullptr, &desc, D3D12_CPU_DESCRIPTOR_HANDLE{ descriptor.mDescriptorHandleCPU });
 	mDescriptors[(uint32)SR_TextureDescriptorType::RWTexture] = descriptor;
 	return true;

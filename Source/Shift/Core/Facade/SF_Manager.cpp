@@ -1,5 +1,6 @@
 #include "Facade_Precompiled.h"
 #include "SF_Manager.h"
+#include "SF_BaseRenderer.h"
 
 SF_Manager* SF_Manager::gInstance = nullptr;
 
@@ -13,9 +14,19 @@ SF_Manager::~SF_Manager()
 
 }
 
-bool SF_Manager::Init(void* aWindowHandle)
+bool SF_Manager::Init(void* /*aWindowHandle*/)
 {
 	return false;
+}
+
+void SF_Manager::Update()
+{
+	// Handle Input
+	SF_InputManager
+
+
+	// Other
+
 }
 
 void SF_Manager::Render()

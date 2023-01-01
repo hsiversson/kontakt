@@ -46,10 +46,12 @@ namespace Shift.Core
             // NvAPI
             aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\Nvidia\nvapi\include");
             aConfig.LibraryPaths.Add(@"[project.ShiftExternalFolderPath]\Nvidia\nvapi\lib");
+            aConfig.LibraryFiles.Add("nvapi64");
             
             // AGS
             aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\AMD\ags\ags_lib\inc");
             aConfig.LibraryPaths.Add(@"[project.ShiftExternalFolderPath]\AMD\ags\ags_lib\lib");
+            aConfig.LibraryFiles.Add("amd_ags_x64");
             aConfig.TargetCopyFiles.Add(@"[project.ShiftExternalFolderPath]\AMD\ags\ags_lib\lib\amd_ags_x64.dll");
         }
     }

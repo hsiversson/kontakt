@@ -1,0 +1,45 @@
+struct PixelShaderInput
+{
+    float4 mClipPosition : SV_POSITION;
+    float3 mViewPosition : VIEW_POSITION;
+    float3 mWorldPosition : WORLD_POSITION;
+    float3 mPrevWorldPosition : PREV_WORLD_POSITION;
+    float3 mNormal : NORMAL;
+    float3 mTangent : TANGENT;
+    float3 mBitangent : BITANGENT;
+    float2 mUV : UV0;
+    nointerpolation uint mMaterialIndex : MATERIAL_INDEX;
+};
+
+struct Constants
+{
+	uint mBaseInstanceDataOffset;
+	uint mInstanceDataByteSize;
+    uint mInstanceOffset;
+    uint pad;
+};
+ConstantBuffer<Constants> PassConstants : register(b0);
+
+PixelShaderInput Main(const SR_VertexLayout aVertexInput, uint aInstanceId : SV_InstanceID)
+{
+    PixelShaderInput output;
+    const SR_InstanceData instanceData = SR_LoadInstanceData(PassConstants.mBaseInstanceDataOffset + (PassConstants.mInstanceDataByteSize * (PassConstants.mInstanceOffset + aInstanceId)));
+
+    float3x3 transform33 = (float3x3)instanceData.mTransform;
+
+    float3 worldPos = mul(instanceData.mTransform, float4(aVertexInput.mPosition, 1.0f)).xyz;
+    float3 prevWorldPos = mul(instanceData.mPrevTransform, float4(aVertexInput.mPosition, 1.0f)).xyz;
+
+    output.mWorldPosition = worldPos;
+    output.mViewPosition = mul(SR_ViewConstants.mWorldToCamera, float4(worldPos, 1.0f)).xyz;
+    output.mClipPosition = mul(SR_ViewConstants.mWorldToClip, float4(worldPos, 1.0f));
+    output.mPrevWorldPosition = prevWorldPos;
+
+    output.mNormal = normalize(mul(transform33, aVertexInput.mNormal));
+    output.mTangent = normalize(mul(transform33, aVertexInput.mTangent));
+    output.mBitangent = normalize(mul(transform33, aVertexInput.mBitangent));
+    output.mUV = aVertexInput.mUV;
+    output.mMaterialIndex = instanceData.mMaterialIndex;
+
+    return output;
+}

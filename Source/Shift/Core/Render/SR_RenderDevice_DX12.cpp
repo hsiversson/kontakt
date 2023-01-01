@@ -5,6 +5,8 @@
 #include "SR_RenderDevice_DX12.h"
 #include "SR_TextureResource_DX12.h"
 #include "SR_Texture_DX12.h"
+#include "SR_BufferResource_DX12.h"
+#include "SR_Buffer_DX12.h"
 #include "SR_SwapChain_DX12.h"
 #include "SR_CommandQueue_DX12.h"
 #include "SR_DescriptorHeap_DX12.h"
@@ -128,7 +130,7 @@ bool SR_RenderDevice_DX12::Init()
 	if (!SetupRootSignatures())
 		return false;
 
-	return true;
+	return PostInit();
 }
 
 SC_Ref<SR_TextureResource> SR_RenderDevice_DX12::CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData, uint32 aDataCount)
@@ -149,6 +151,26 @@ SC_Ref<SR_Texture> SR_RenderDevice_DX12::CreateTexture(const SR_TexturePropertie
 		return nullptr;
 
 	return newTexture;
+}
+
+SC_Ref<SR_BufferResource> SR_RenderDevice_DX12::CreateBufferResource(const SR_BufferResourceProperties& aBufferResourceProperties, const void* aInitialData)
+{
+	SC_Ref<SR_BufferResource_DX12> newBufferResource = new SR_BufferResource_DX12(aBufferResourceProperties);
+
+	if (!newBufferResource->Init(aInitialData))
+		return nullptr;
+
+	return newBufferResource;
+}
+
+SC_Ref<SR_Buffer> SR_RenderDevice_DX12::CreateBuffer(const SR_BufferProperties& aBufferProperties, const SC_Ref<SR_BufferResource>& aResource)
+{
+	SC_Ref<SR_Buffer_DX12> newBuffer = new SR_Buffer_DX12(aBufferProperties, aResource);
+
+	if (!newBuffer->Init())
+		return nullptr;
+
+	return newBuffer;
 }
 
 SC_Ref<SR_Shader> SR_RenderDevice_DX12::CreateShader(const SR_CreateShaderProperties& aCreateShaderProperties)
@@ -178,11 +200,6 @@ SC_Ref<SR_PipelineState> SR_RenderDevice_DX12::CreatePipelineState()
 		return nullptr;
 
 	return pso;
-}
-
-SR_CommandQueue* SR_RenderDevice_DX12::GetCommandQueue(const SR_CommandListType& aType) const
-{
-	return mCommandQueues[static_cast<uint32>(aType)];
 }
 
 SR_DescriptorHeap* SR_RenderDevice_DX12::GetDescriptorHeap(const SR_DescriptorHeapType& aDescriptorHeapType) const
@@ -307,7 +324,7 @@ bool SR_RenderDevice_DX12::QueryDeviceCapabilites()
 	{
 #if IS_PC_PLATFORM
 	#if SR_ENABLE_NVAPI
-		if (mCaps.mDeviceInfo.mVendor == SR_GpuVendor::Nvidia && !SC_CommandLine::HasCommand("nonvapi"))
+		if (mCaps.mDeviceInfo.mVendor == SR_GpuVendor::Nvidia && !SC_CommandLine::HasArgument("nonvapi"))
 		{
 			if (NvAPI_Initialize() == NVAPI_OK)
 			{
@@ -398,7 +415,7 @@ bool SR_RenderDevice_DX12::QueryDeviceCapabilites()
 	#endif //SR_ENABLE_NVAPI
 
 	#if SR_ENABLE_AGS
-		if (mCaps.mDeviceInfo.mVendor == SR_GpuVendor::AMD && !SC_CommandLine::HasCommand("noags"))
+		if (mCaps.mDeviceInfo.mVendor == SR_GpuVendor::AMD && !SC_CommandLine::HasArgument("noags"))
 		{
 			AGSConfiguration config = {};
 			AGSGPUInfo gpuInfo = {};
@@ -414,10 +431,10 @@ bool SR_RenderDevice_DX12::QueryDeviceCapabilites()
 	}
 
 	{
-		mCaps.mAsyncCompute = !SC_CommandLine::HasCommand("noasynccompute");
+		mCaps.mAsyncCompute = !SC_CommandLine::HasArgument("noasynccompute");
 		SC_LOG("Async Compute: {}", mCaps.mAsyncCompute ? "true" : "false");
 
-		mCaps.mAsyncCopy = !SC_CommandLine::HasCommand("noasynccopy");
+		mCaps.mAsyncCopy = !SC_CommandLine::HasArgument("noasynccopy");
 		SC_LOG("Async Copy: {}", mCaps.mAsyncCopy ? "true" : "false");
 	}
 

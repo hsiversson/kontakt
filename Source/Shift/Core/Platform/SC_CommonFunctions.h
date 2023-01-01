@@ -9,6 +9,19 @@ inline typename SC_RemoveReference<T>::Type&& SC_Move(T&& aObj)
 	return (CastType&&)aObj;
 }
 
+template<typename T>
+inline constexpr T&& SC_Forward(typename SC_RemoveReference<T>::Type& aValue)
+{
+	return static_cast<T&&>(aValue);
+}
+
+template<typename T>
+inline constexpr T&& SC_Forward(typename SC_RemoveReference<T>::Type&& aValue)
+{
+	static_assert(!SC_IsLeftValueReference<T>::mValue && "Invalid forwarding");
+	return static_cast<T&&>(aValue);
+}
+
 template<class T>
 inline void SC_FillN(T* aDestination, SC_SizeT aCount, const T& aValue)
 {

@@ -30,10 +30,12 @@ public:
 	SC_Ref<SR_TextureResource> CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData = nullptr, uint32 aDataCount = 0) override;
 	SC_Ref<SR_Texture> CreateTexture(const SR_TextureProperties& aTextureProperties, const SC_Ref<SR_TextureResource>& aResource) override;
 
+	SC_Ref<SR_BufferResource> CreateBufferResource(const SR_BufferResourceProperties& aBufferResourceProperties, const void* aInitialData = nullptr) override;
+	SC_Ref<SR_Buffer> CreateBuffer(const SR_BufferProperties& aBufferProperties, const SC_Ref<SR_BufferResource>& aResource) override;
+
 	SC_Ref<SR_Shader> CreateShader(const SR_CreateShaderProperties& aCreateShaderProperties) override;
 	SC_Ref<SR_PipelineState> CreatePipelineState() override;
 
-	SR_CommandQueue* GetCommandQueue(const SR_CommandListType& aType) const override;
 	SR_DescriptorHeap* GetDescriptorHeap(const SR_DescriptorHeapType& aDescriptorHeapType) const override;
 
 	SC_Ref<SR_SwapChain> CreateSwapChain(const SR_SwapChainProperties& aProperties, void* aNativeWindowHandle) override;
@@ -66,8 +68,6 @@ private:
 	SR_DescriptorHeap* mSamplerDescriptorHeap;
 	SR_DescriptorHeap* mRTVDescriptorHeap;
 	SR_DescriptorHeap* mDSVDescriptorHeap;
-
-	SC_Ref<SR_CommandQueue_DX12> mCommandQueues[static_cast<uint32>(SR_CommandListType::COUNT)];
 
     bool mEnableGpuValidation;
 

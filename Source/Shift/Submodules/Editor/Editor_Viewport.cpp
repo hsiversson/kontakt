@@ -18,5 +18,4 @@ void Editor_Viewport::Update()
 
 void Editor_Viewport::Render()
 {
-
 }

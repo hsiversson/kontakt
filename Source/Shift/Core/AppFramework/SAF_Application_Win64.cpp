@@ -25,11 +25,11 @@ bool SAF_Application_Win64::Init()
 	SR_API renderApi = SR_API::D3D12;
 
 #if SR_ENABLE_DX12
-	if (SC_CommandLine::HasCommand("dx12"))
+	if (SC_CommandLine::HasArgument("dx12"))
 		renderApi = SR_API::D3D12;
 #endif
 #if SR_ENABLE_VULKAN
-	if (SC_CommandLine::HasCommand("vulkan"))
+	if (SC_CommandLine::HasArgument("vulkan"))
 		renderApi = SR_API::Vulkan;
 #endif
 
@@ -52,7 +52,7 @@ bool SAF_Application_Win64::Init()
 	if (!mWindow.mSwapChain)
 		return false;
 
-	//SR_RenderDevice::gInstance->SetSwapChain(window->mSwapChain);
+	SR_RenderDevice::gInstance->SetCurrentSwapChain(mWindow.mSwapChain);
 
 	return SAF_Application::Init();
 }
@@ -63,10 +63,10 @@ bool SAF_Application_Win64::Update(SAF_ReturnCode& aOutReturnCode)
 		MSG msg = {};
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
+			DispatchMessage(&msg);
+
 			if (msg.message == WM_QUIT)
 				return false;
-
-			DispatchMessage(&msg);
 		}
 	}
 

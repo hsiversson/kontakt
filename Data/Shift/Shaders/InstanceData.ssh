@@ -1,0 +1,20 @@
+#pragma once 
+#include "SceneConstants.ssh"
+#include "BindlessResources.ssh"
+
+#define SR_INSTANCE_DATA_BYTESIZE 144
+struct SR_InstanceData
+{
+	float4x4 mTransform;
+	float4x4 mPrevTransform;
+	uint mMaterialIndex;
+    uint mNumBones;
+    uint2 __pad;
+};
+
+SR_InstanceData SR_LoadInstanceData(in uint aInstanceOffset)
+{
+    ByteAddressBuffer instanceDataBuffer = GetByteBuffer(SR_SceneConstants.mInstanceDataBufferIndex);
+    SR_InstanceData instanceData = SR_Load<SR_InstanceData>(instanceDataBuffer, aInstanceOffset);
+    return instanceData;
+}

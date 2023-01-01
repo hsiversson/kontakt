@@ -1,0 +1,38 @@
+#pragma once 
+#include "Common.ssh"
+
+// Must reflect Gfx_ViewConstants
+struct ViewConstants
+{
+	float4x4 mWorldToClip;
+	float4x4 mClipToWorld;
+	float4x4 mWorldToCamera;
+	float4x4 mCameraToWorld;
+	float4x4 mCameraToClip;
+	float4x4 mClipToCamera;
+	
+	float4x4 mPrevWorldToClip;
+	float4x4 mPrevClipToWorld;
+	float4x4 mPrevWorldToCamera;
+	float4x4 mPrevCameraToWorld;
+	float4x4 mPrevCameraToClip;
+	float4x4 mPrevClipToCamera;
+
+	float3 mCameraPosition;
+	float mFov;
+};
+
+struct SceneConstants
+{
+    ViewConstants mViewConstants;
+
+	uint mInstanceDataBufferIndex;
+	uint mFrameIndex;
+	float mFrameTimeDelta;
+	uint _unused0;
+};
+
+ConstantBuffer<SceneConstants> gSceneConstants : register(b1);
+
+#define SR_SceneConstants			gSceneConstants
+#define SR_ViewConstants			gSceneConstants.mViewConstants

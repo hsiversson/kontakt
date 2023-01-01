@@ -21,5 +21,22 @@ namespace Shift.Submodules
             aConfig.AddPrivateDependency<GameEntityProject>(aTarget);
             aConfig.AddPrivateDependency<Core.AppFrameworkProject>(aTarget);
         }
+
+        public override void ConfigureWin64(Configuration aConfig, Target aTarget)
+        {
+            base.ConfigureWin64(aConfig, aTarget);
+
+            // assimp
+            aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\Assimp\include");
+            aConfig.LibraryPaths.Add(@"[project.ShiftExternalFolderPath]\Assimp\lib");
+            aConfig.LibraryFiles.Add("assimp-vc143-mt");
+			aConfig.TargetCopyFiles.Add(@"[project.ShiftExternalFolderPath]\Assimp\bin\assimp-vc143-mt.dll");
+
+            // msdfgen
+            aConfig.IncludePaths.Add(@"[project.ShiftExternalFolderPath]\MSDFGen\include");
+            aConfig.LibraryPaths.Add(@"[project.ShiftExternalFolderPath]\MSDFGen\lib");
+            aConfig.LibraryFiles.Add("msdfgen-core");
+            aConfig.LibraryFiles.Add("msdfgen-ext");
+        }
     }
 }

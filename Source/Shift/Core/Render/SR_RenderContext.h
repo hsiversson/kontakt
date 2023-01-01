@@ -9,6 +9,7 @@ class SR_CommandList;
 
 class SR_RenderContext
 {
+    friend class SR_RenderDevice;
 private:
     struct StateCache
     {

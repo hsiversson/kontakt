@@ -147,9 +147,9 @@ bool SR_PipelineState_DX12::InitDefault(const SR_PipelineStateProperties& aPrope
 	return SR_VerifyHRESULT(result);
 }
 
-bool SR_PipelineState_DX12::InitAsMeshShader(const SR_PipelineStateProperties& aProperties)
+bool SR_PipelineState_DX12::InitAsMeshShader(const SR_PipelineStateProperties& /*aProperties*/)
 {
-
+	return false;
 }
 
 bool SR_PipelineState_DX12::InitAsComputeShader(const SR_PipelineStateProperties& aProperties)
@@ -172,13 +172,12 @@ bool SR_PipelineState_DX12::InitAsComputeShader(const SR_PipelineStateProperties
 	return SR_VerifyHRESULT(result);
 }
 
-bool SR_PipelineState_DX12::InitAsRaytracingShader(const SR_PipelineStateProperties& aProperties)
+bool SR_PipelineState_DX12::InitAsRaytracingShader(const SR_PipelineStateProperties& /*aProperties*/)
 {
-
+	return false;
 }
 
-void SR_PipelineState_DX12::CreateRaytracingShaderTable(const SR_PipelineStateProperties& aProperties)
+void SR_PipelineState_DX12::CreateRaytracingShaderTable(const SR_PipelineStateProperties& /*aProperties*/)
 {
-
 }
 #endif
