@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "SC_Semaphore.h"
+#include "SC_Mutex.h"
 
 #ifdef Yield
 #undef Yield

@@ -38,8 +38,8 @@ public:
 	T Length() const;
 	T Length2() const;
 
-	T Dot(const SC_TVector3& aVec);
-	SC_TVector3 Cross(const SC_TVector3& aVec);
+	T Dot(const SC_TVector3& aVec) const;
+	SC_TVector3 Cross(const SC_TVector3& aVec) const;
 
 	// Swizzles
 	SC_TVector2<T> XY() const { return SC_TVector2<T>(x, y); }
@@ -149,13 +149,13 @@ inline T SC_TVector3<T>::Length2() const
 }
 
 template<class T>
-inline T SC_TVector3<T>::Dot(const SC_TVector3& aVec)
+inline T SC_TVector3<T>::Dot(const SC_TVector3& aVec) const
 {
 	return x * aVec.x + y * aVec.y + z * aVec.z;
 }
 
 template<class T>
-inline SC_TVector3<T> SC_TVector3<T>::Cross(const SC_TVector3& aVec)
+inline SC_TVector3<T> SC_TVector3<T>::Cross(const SC_TVector3& aVec) const
 {
 	return SC_TVector3<T>(
 		(y * aVec.z - z * aVec.y),

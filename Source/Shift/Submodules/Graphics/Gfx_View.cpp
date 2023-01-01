@@ -41,3 +41,13 @@ void Gfx_View::FinishRender()
 {
 
 }
+
+void Gfx_View::SetCamera(const Gfx_Camera& aCamera)
+{
+	mCamera = aCamera;
+}
+
+const Gfx_Camera& Gfx_View::GetCamera() const
+{
+	return mCamera;
+}

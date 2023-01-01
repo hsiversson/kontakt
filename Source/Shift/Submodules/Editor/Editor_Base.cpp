@@ -33,6 +33,10 @@ bool Editor_Base::Init()
 
 void Editor_Base::Update()
 {
+}
+
+void Editor_Base::Render()
+{
 	mViewRenderer->Render(mGfxView);
 }
 

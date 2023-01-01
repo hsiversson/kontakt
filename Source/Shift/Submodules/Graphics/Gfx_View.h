@@ -1,6 +1,7 @@
 //ProjectFilter(View)
 #pragma once
 #include "Gfx_ViewRenderData.h"
+#include "Gfx_Camera.h"
 
 class Gfx_View : public SC_ReferenceCounted
 {
@@ -18,8 +19,11 @@ public:
 	void StartRender();
 	void FinishRender();
 
-private:
+	void SetCamera(const Gfx_Camera& aCamera);
+	const Gfx_Camera& GetCamera() const;
 
+private:
 	Gfx_ViewRenderData mViewRenderData[2];
 
+	Gfx_Camera mCamera;
 };

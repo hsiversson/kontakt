@@ -28,6 +28,8 @@
 // EngineTypes
 #include "SC_Math.h"
 #include "SC_AABB.h"
+#include "SC_Sphere.h"
+#include "SC_Plane.h"
 #include "SC_Function.h"
 #include "SC_Slot.h"
 #include "SC_Array.h"

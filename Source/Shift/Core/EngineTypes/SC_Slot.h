@@ -1,3 +1,4 @@
+//ProjectFilter(Functional)
 #pragma once
 #include "SC_Array.h"
 #include "SC_Function.h"

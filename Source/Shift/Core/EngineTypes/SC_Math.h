@@ -54,14 +54,14 @@ inline Type SC_Lerp(const Type& aA, const Type& aB, const Type& aT)
 }
 
 template<class T>
-inline auto RadiansToDegrees(T const& aRadVal) -> decltype(aRadVal* (180.f / SC_PI))
+inline auto SC_RadiansToDegrees(T const& aRadVal) -> decltype(aRadVal* (180.f / SC_PI))
 {
 	return aRadVal * (180.f / SC_PI);
 }
 
 /* Converts degrees to radians. */
 template<class T>
-inline auto DegreesToRadians(T const& aDegVal) -> decltype(aDegVal* (SC_PI / 180.f))
+inline auto SC_DegreesToRadians(T const& aDegVal) -> decltype(aDegVal* (SC_PI / 180.f))
 {
 	return aDegVal * (SC_PI / 180.f);
 }

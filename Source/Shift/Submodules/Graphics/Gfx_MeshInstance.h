@@ -10,7 +10,10 @@ public:
 
 	Gfx_Mesh* GetMesh() const;
 
+	const SC_AABB& GetBoundingBox() const;
 private:
+	SC_AABB mBoundingBox;
+
 	SC_Ref<Gfx_Mesh> mMesh;
 };
 

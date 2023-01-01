@@ -17,3 +17,8 @@ Gfx_Mesh* Gfx_MeshInstance::GetMesh() const
 {
 	return mMesh;
 }
+
+const SC_AABB& Gfx_MeshInstance::GetBoundingBox() const
+{
+	return mBoundingBox;
+}

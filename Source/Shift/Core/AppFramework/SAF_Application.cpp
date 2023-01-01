@@ -54,6 +54,9 @@ bool SAF_Application::Init()
 {
     SF_Manager::Create();
 
+    if (!SF_Manager::Get()->Init(nullptr))
+        return false;
+
     if (mApplicationInterface && !mApplicationInterface->Init())
         return false;
 
@@ -84,15 +87,14 @@ bool SAF_Application::Update(SAF_ReturnCode& aOutReturnCode)
 {
     // Simulation
 
+    if (mApplicationInterface)
+        mApplicationInterface->Update();
+
 	SR_RenderDevice::gInstance->BeginFrame();
     if (mApplicationInterface)
-		mApplicationInterface->Update();
+		mApplicationInterface->Render();
 
     // Prepare Rendering
-
-    // Schedule Rendering
-    // Post Start Render Frame Task
-   // SR_RenderDevice::gInstance->BeginFrame();
 
     SR_RenderDevice::gInstance->EndFrame();
     SR_RenderDevice::gInstance->Present();

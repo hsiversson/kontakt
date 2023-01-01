@@ -14,6 +14,7 @@ public:
 	bool Init() override;
 
 	void Update() override;
+	void Render() override;
 
 	void Exit() override;
 

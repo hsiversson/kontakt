@@ -31,7 +31,7 @@ struct Gfx_LocalLightGpuData
 	SC_Vector3i _unused;
 };
 
-class Gfx_Light
+class Gfx_Light : public SC_ReferenceCounted
 {
 public:
 
