@@ -1,6 +1,7 @@
 #pragma once
 
 class SF_BaseRenderer;
+class SF_InputManager;
 
 class SF_Manager
 {
@@ -20,6 +21,7 @@ public:
 
 private:
 	SC_Ptr<SF_BaseRenderer> mRenderer;
+	SC_Ptr<SF_InputManager> mInputManager;
 
 	static SF_Manager* gInstance;
 };
