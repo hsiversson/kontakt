@@ -33,7 +33,7 @@ public:
 
 	void Reserve(uint32 aNumToReserve);
 	void Respace(uint32 aNumToRespace);
-	void AllocateAdditional(uint32 aNumToAlloc);
+	void ReserveAdditional(uint32 aNumToAlloc);
 	void Compact(); // Will compact the array to remove unused allocated space.
 
 	T& First();
@@ -238,7 +238,7 @@ inline void SC_Array<T>::Respace(uint32 aNumToRespace)
 }
 
 template<class T>
-inline void SC_Array<T>::AllocateAdditional(uint32 aNumToAlloc)
+inline void SC_Array<T>::ReserveAdditional(uint32 aNumToAlloc)
 {
 	const uint32 requestedCount = mCurrentItemCount + aNumToAlloc;
 
@@ -367,7 +367,7 @@ inline void SC_Array<T>::Swap(SC_Array<T>& aOther)
 template<class T>
 inline T& SC_Array<T>::Add()
 {
-	AllocateAdditional(1);
+	ReserveAdditional(1);
 
 	const uint32 currentCount = mCurrentItemCount;
 	new (const_cast<typename SC_RemoveConst<T>::Type*>(mInternalItemBuffer + currentCount)) T();
@@ -378,14 +378,14 @@ inline T& SC_Array<T>::Add()
 template<class T>
 inline void SC_Array<T>::AddUninitialized(uint32 aNumToAdd)
 {
-	AllocateAdditional(aNumToAdd);
+	ReserveAdditional(aNumToAdd);
 	mCurrentItemCount += aNumToAdd;
 }
 
 template <class T>
 inline T& SC_Array<T>::Add(const T& aItem)
 {
-	AllocateAdditional(1);
+	ReserveAdditional(1);
 
 	const uint32 currentCount = mCurrentItemCount;
 	new (const_cast<typename SC_RemoveConst<T>::Type*>(mInternalItemBuffer + currentCount)) T(aItem);
@@ -396,7 +396,7 @@ inline T& SC_Array<T>::Add(const T& aItem)
 template <class T>
 inline T& SC_Array<T>::Add(T&& aItem)
 {
-	AllocateAdditional(1);
+	ReserveAdditional(1);
 
 	const uint32 currentCount = mCurrentItemCount;
 	new (const_cast<typename SC_RemoveConst<T>::Type*>(mInternalItemBuffer + currentCount)) T(SC_Move(aItem));
@@ -422,7 +422,7 @@ inline void SC_Array<T>::Add(const SC_Array& aOtherArray)
 	if (aOtherArray.mCurrentItemCount == 0)
 		return;
 
-	AllocateAdditional(aOtherArray.mCurrentItemCount);
+	ReserveAdditional(aOtherArray.mCurrentItemCount);
 	SC_CopyConstruct(mInternalItemBuffer + mCurrentItemCount, aOtherArray.mInternalItemBuffer, aOtherArray.mCurrentItemCount);
 	mCurrentItemCount += aOtherArray.mCurrentItemCount;
 }
@@ -433,7 +433,7 @@ inline void SC_Array<T>::Add(const T* aItemBuffer, uint32 aNumItemsToAdd)
 	if (aNumItemsToAdd == 0)
 		return;
 
-	AllocateAdditional(aNumItemsToAdd);
+	ReserveAdditional(aNumItemsToAdd);
 	SC_CopyConstruct(mInternalItemBuffer + mCurrentItemCount, aItemBuffer, aNumItemsToAdd);
 	mCurrentItemCount += aNumItemsToAdd;
 }
@@ -532,7 +532,7 @@ inline void SC_Array<T>::operator+=(SC_Array<T>&& aRhs)
 	if (aRhs.mCurrentItemCount == 0)
 		return;
 
-	AllocateAdditional(aRhs.mCurrentItemCount);
+	ReserveAdditional(aRhs.mCurrentItemCount);
 	SC_MoveConstruct(mInternalItemBuffer + mCurrentItemCount, aRhs.mInternalItemBuffer, aRhs.mCurrentItemCount);
 	mCurrentItemCount += aRhs.mCurrentItemCount;
 

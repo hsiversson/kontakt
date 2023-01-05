@@ -2,7 +2,8 @@
 #include "Graphics_Precompiled.h"
 #include "Gfx_View.h"
 
-Gfx_View::Gfx_View()
+Gfx_View::Gfx_View(Gfx_World* aParentWorld)
+	: mParentWorld(aParentWorld)
 {
 
 }
@@ -50,4 +51,9 @@ void Gfx_View::SetCamera(const Gfx_Camera& aCamera)
 const Gfx_Camera& Gfx_View::GetCamera() const
 {
 	return mCamera;
+}
+
+Gfx_World* Gfx_View::GetWorld() const
+{
+	return mParentWorld;
 }

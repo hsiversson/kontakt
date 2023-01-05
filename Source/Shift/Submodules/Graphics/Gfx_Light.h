@@ -35,7 +35,9 @@ class Gfx_Light : public SC_ReferenceCounted
 {
 public:
 
-private:
+	const SC_Sphere& GetBoundingSphere() const;
 
+private:
+	SC_Sphere mBoundingSphere;
 };
 

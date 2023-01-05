@@ -33,7 +33,6 @@ private:
 		Action()
 			: mActionType(ActionType::None)
 			, mObjectType(ObjectType::Unknown)
-			, mMeshInstance(nullptr)
 		{}
 
 		Action(const Action& aOther)

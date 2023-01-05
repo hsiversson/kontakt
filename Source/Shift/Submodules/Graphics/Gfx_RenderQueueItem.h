@@ -46,7 +46,7 @@ struct Gfx_RenderQueueItem
 	SR_RasterizerState* mRasterizerState;
 	SR_BlendState* mBlendState;
 
-	SR_PipelineState* mShader;
+	SR_PipelineState* mPipelineState;
 
 	float mSortDistance;
 	uint32 mBaseInstanceDataOffset;
