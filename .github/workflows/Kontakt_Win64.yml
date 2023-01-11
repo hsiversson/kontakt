@@ -1,0 +1,17 @@
+name: Kontakt Win64
+on: [push]
+jobs:
+  kontakt_win64:
+    name: test
+    runs-on: windows-latest
+    steps:
+      - run: echo "Trigger event type - ${{ github.event_name }}"
+      - run: echo "Server OS - ${{ runner.os }} server"
+      - run: echo "Building ${{ github.ref }}..."
+      - name: Getting latest...
+        uses: actions/checkout@v3
+      - run: echo "${{ github.repository }} has been cloned"
+      - name: Repository files
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "Finished with code - ${{ job.status }}"
