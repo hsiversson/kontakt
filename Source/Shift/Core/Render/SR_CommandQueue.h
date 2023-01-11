@@ -17,7 +17,9 @@ public:
 	virtual SR_Fence GetNextFence();
 
 	virtual void SignalFence(const SR_Fence& /*aFence*/);
+	virtual void SignalFence(uint64 /*aValue*/, SR_FenceResource* /*aResource*/);
 	virtual void InsertWait(const SR_Fence& /*aFence*/);
+	virtual void InsertWait(uint64 /*aValue*/, SR_FenceResource* /*aResource*/);
 
 	virtual bool IsFencePending(const SR_Fence& /*aFence*/);
 	virtual bool WaitForFence(const SR_Fence& /*aFence*/, bool /*aBlock*/ = true);

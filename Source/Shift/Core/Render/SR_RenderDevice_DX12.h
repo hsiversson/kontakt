@@ -27,6 +27,8 @@ public:
 
     bool Init() override;
 
+	SC_Ref<SR_CommandList> CreateCommandList(const SR_CommandListType& aType) override;
+
 	SC_Ref<SR_TextureResource> CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData = nullptr, uint32 aDataCount = 0) override;
 	SC_Ref<SR_Texture> CreateTexture(const SR_TextureProperties& aTextureProperties, const SC_Ref<SR_TextureResource>& aResource) override;
 
@@ -35,6 +37,8 @@ public:
 
 	SC_Ref<SR_Shader> CreateShader(const SR_CreateShaderProperties& aCreateShaderProperties) override;
 	SC_Ref<SR_PipelineState> CreatePipelineState() override;
+
+	SC_Ref<SR_FenceResource> CreateFenceResource() override;
 
 	SR_DescriptorHeap* GetDescriptorHeap(const SR_DescriptorHeapType& aDescriptorHeapType) const override;
 

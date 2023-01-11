@@ -16,6 +16,16 @@
 
 SR_RenderDevice* SR_RenderDevice::gInstance = nullptr;
 
+struct triplebufferer
+{
+	void advance()
+	{
+	}
+
+	volatile uint32 currentIndex;
+	volatile uint32 numFramesInFlight;
+};
+
 SR_RenderDevice::SR_RenderDevice()
 	: mEnableDebugMode(false)
 	, mEnableBreakOnError(false)
@@ -26,6 +36,12 @@ SR_RenderDevice::SR_RenderDevice()
 
 SR_RenderDevice::~SR_RenderDevice()
 {
+	for (uint32 i = 0; i < static_cast<uint32>(SR_CommandListType::COUNT); ++i)
+	{
+		mContextThreads[i]->Stop(true);
+		delete mContextThreads[i];
+		mContextThreads[i] = nullptr;
+	}
 }
 
 void SR_RenderDevice::BeginFrame()
@@ -33,21 +49,11 @@ void SR_RenderDevice::BeginFrame()
 	// Post Frame Task
 	// Begin RenderFrame
 
-// TEMP
-	if (!SR_RenderContext::gCurrentContext)
-		SR_RenderContext::gCurrentContext = new SR_RenderContext;
+	//auto beginFrameTask = []()
+	//{
+	//};
+	//PostRenderTask(SR_CommandListType::Graphics, beginFrameTask);
 
-	if (!SR_RenderContext::gCurrentContext->mCurrentCmdList)
-	{
-		SC_Ref<SR_CommandList_DX12> cmdList = new SR_CommandList_DX12(SR_CommandListType::Graphics);
-		cmdList->Init();
-		SR_RenderContext::gCurrentContext->mCurrentCmdList = cmdList;
-	}
-
-	SR_RenderContext::gCurrentContext->mCurrentCmdList->Open();
-
-
-// TEMP END
 }
 
 void SR_RenderDevice::EndFrame()
@@ -55,28 +61,46 @@ void SR_RenderDevice::EndFrame()
 	// Post Frame Task
 	// End RenderFrame
 
-	SR_RenderContext::gCurrentContext->mCurrentCmdList->Close();
-
-	SR_CommandQueue* cmdQueue = mCommandQueues[static_cast<uint32>(SR_CommandListType::Graphics)];
-	cmdQueue->SubmitCommandList(SR_RenderContext::gCurrentContext->mCurrentCmdList);
-
-	SR_Fence fence = cmdQueue->GetNextFence();
-	cmdQueue->SignalFence(fence);
-
-	cmdQueue->WaitForFence(fence);
+	//auto endFrameTask = []()
+	//{
+	//};
+	//PostRenderTask(SR_CommandListType::Graphics, endFrameTask);
 }
 
 void SR_RenderDevice::Present()
 {
-	// Post Frame Task
-	// Present
-	mCurrentSwapChain->Present();
+	auto presentTask = [&]()
+	{
+		mCurrentSwapChain->Present();
+	};
+	SC_Ref<SC_Event> ev = PostRenderTask(SR_CommandListType::Graphics, presentTask);
+	ev->Wait();
+}
 
-	SR_CommandQueue* cmdQueue = mCommandQueues[static_cast<uint32>(SR_CommandListType::Graphics)];
-	SR_Fence fence = cmdQueue->GetNextFence();
-	cmdQueue->SignalFence(fence);
+SC_Ref<SC_Event> SR_RenderDevice::PostRenderTask(const SR_CommandListType& aType, std::function<void()> aTask)
+{
+	return mContextThreads[static_cast<uint32>(aType)]->PostTask(aTask);
+}
 
-	cmdQueue->WaitForFence(fence);
+SC_Ref<SC_Event> SR_RenderDevice::PostGraphicsTask(std::function<void()> aTask)
+{
+	return PostRenderTask(SR_CommandListType::Graphics, aTask);
+}
+
+SC_Ref<SC_Event> SR_RenderDevice::PostComputeTask(std::function<void()> aTask)
+{
+	return PostRenderTask(SR_CommandListType::Compute, aTask);
+}
+
+SC_Ref<SC_Event> SR_RenderDevice::PostCopyTask(std::function<void()> aTask)
+{
+	return PostRenderTask(SR_CommandListType::Copy, aTask);
+}
+
+SC_Ref<SR_CommandList> SR_RenderDevice::CreateCommandList(const SR_CommandListType& /*aType*/)
+{
+	SC_ASSERT(false, "Not Implemented Yet!");
+	return nullptr;
 }
 
 SC_Ref<SR_TextureResource> SR_RenderDevice::CreateTextureResource(const SR_TextureResourceProperties& /*aTextureResourceProperties*/, const SR_PixelData* /*aInitialData*/, uint32 /*aDataCount*/)
@@ -110,6 +134,12 @@ SC_Ref<SR_Shader> SR_RenderDevice::CreateShader(const SR_CreateShaderProperties&
 }
 
 SC_Ref<SR_PipelineState> SR_RenderDevice::CreatePipelineState()
+{
+	SC_ASSERT(false, "Not Implemented Yet!");
+	return nullptr;
+}
+
+SC_Ref<SR_FenceResource> SR_RenderDevice::CreateFenceResource()
 {
 	SC_ASSERT(false, "Not Implemented Yet!");
 	return nullptr;
@@ -203,5 +233,20 @@ void SR_RenderDevice::Destroy()
 
 bool SR_RenderDevice::PostInit()
 {
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Graphics)] = new SR_ContextThread(SR_CommandListType::Graphics);
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Graphics)]->Init();
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Graphics)]->SetName("Render Graphics");
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Graphics)]->Start();
+
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Compute)] = new SR_ContextThread(SR_CommandListType::Compute);
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Compute)]->Init();
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Compute)]->SetName("Render Compute");
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Compute)]->Start();
+
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Copy)] = new SR_ContextThread(SR_CommandListType::Copy);
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Copy)]->Init();
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Copy)]->SetName("Render Copy");
+	mContextThreads[static_cast<uint32>(SR_CommandListType::Copy)]->Start();
+
 	return true;
 }

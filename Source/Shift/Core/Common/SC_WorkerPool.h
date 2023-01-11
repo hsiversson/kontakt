@@ -89,3 +89,28 @@ SC_Future<ReturnType> SC_CreateFrameTask(Func&& aFunction, Args&&... aArgs)
 
 	return future;
 }
+
+template <class Func, class... Args, class ReturnType = std::invoke_result_t<std::decay_t<Func>, std::decay_t<Args>...>>
+SC_Future<ReturnType> SC_CreateLongTask(Func&& aFunction, Args&&... aArgs)
+{
+	SC_Promise<ReturnType>* promise = new SC_Promise<ReturnType>();
+	SC_Future<ReturnType> future = promise->GetFuture();
+
+	auto task = [aFunction, aArgs..., promise]()
+	{
+		if constexpr (std::is_void_v<ReturnType>)
+		{
+			aFunction(aArgs...);
+			promise->SetValue();
+		}
+		else
+		{
+			promise->SetValue(aFunction(aArgs...));
+		}
+		delete promise;
+	};
+
+	SC_WorkerPool::SubmitTask(task, true);
+
+	return future;
+}

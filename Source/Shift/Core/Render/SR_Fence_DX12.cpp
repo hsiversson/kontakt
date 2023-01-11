@@ -63,6 +63,11 @@ uint64 SR_FenceResource_DX12::GetNextValue()
 	return SC_Atomic::Increment_GetNew(mFenceValue);
 }
 
+uint64 SR_FenceResource_DX12::GetLatestValue()
+{
+	return (mFenceValue > 0) ? (mFenceValue - 1): mFenceValue;
+}
+
 ID3D12Fence* SR_FenceResource_DX12::GetD3D12Fence() const
 {
 	return mD3D12Fence.Get();

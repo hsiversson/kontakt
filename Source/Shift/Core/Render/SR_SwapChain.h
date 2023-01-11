@@ -34,6 +34,7 @@ protected:
 	{
 		SC_Ref<SR_TextureResource> mResource;
 		SC_Ref<SR_Texture> mTexture;
+		SC_Ref<SR_FenceResource> mFenceResource;
 	};
 
 	SR_SwapChainProperties mProperties;

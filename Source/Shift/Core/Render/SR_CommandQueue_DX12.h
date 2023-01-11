@@ -18,7 +18,8 @@ public:
 
 	SR_Fence GetNextFence() override;
 
-	void SignalFence(const SR_Fence& aFence) override;
+	void SignalFence(const SR_Fence& aFence) override; 
+	void SignalFence(uint64 aValue, SR_FenceResource* aResource) override;
 	void InsertWait(const SR_Fence& aFence) override;
 
 	bool IsFencePending(const SR_Fence& aFence) override;

@@ -37,9 +37,17 @@ void SR_CommandQueue::SignalFence(const SR_Fence& /*aFence*/)
 
 }
 
+void SR_CommandQueue::SignalFence(uint64 /*aValue*/, SR_FenceResource* /*aResource*/)
+{
+}
+
 void SR_CommandQueue::InsertWait(const SR_Fence& /*aFence*/)
 {
 
+}
+
+void SR_CommandQueue::InsertWait(uint64 /*aValue*/, SR_FenceResource* /*aResource*/)
+{
 }
 
 bool SR_CommandQueue::IsFencePending(const SR_Fence& /*aFence*/)

@@ -50,7 +50,7 @@ bool SR_SwapChain_DX12::UpdateProperties(const SR_SwapChainProperties& aProperti
 
 void SR_SwapChain_DX12::Present()
 {
-	bool vsync = false;
+	bool vsync = true;
 
 	uint32 flags = 0;
 	if (!vsync && (mSwapChainFlags & DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING))
@@ -59,8 +59,13 @@ void SR_SwapChain_DX12::Present()
 	uint32 interval = vsync ? 1 : 0;
 	/*HRESULT hr =*/ mDXGISwapChain->Present(interval, flags);
 
+	SR_CommandQueue* cmdQueue = SR_RenderDevice_DX12::gInstance->GetCommandQueue(SR_CommandListType::Graphics);
+	cmdQueue->SignalFence(mCurrentResource->mFenceResource->GetNextValue(), mCurrentResource->mFenceResource);
+
 	mCurrentIndex = mDXGISwapChain3->GetCurrentBackBufferIndex();
 	mCurrentResource = &mBackbufferResources[mCurrentIndex];
+
+	mCurrentResource->mFenceResource->Wait(mCurrentResource->mFenceResource->GetLatestValue());
 }
 
 bool SR_SwapChain_DX12::CreateSwapChain()
@@ -123,6 +128,7 @@ bool SR_SwapChain_DX12::CreateResources()
 
 	for (uint32 i = 0; i < swapChainDesc.BufferCount; ++i)
 	{
+		BackbufferResource& backbufferResource = mBackbufferResources[i];
 		ID3D12Resource* res = nullptr;
 		HRESULT hr = mDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&res));
 		if (!SR_VerifyHRESULT(hr))
@@ -143,11 +149,13 @@ bool SR_SwapChain_DX12::CreateResources()
 		framebufferProperties.mFormat = SR_ConvertFormat_DX12(desc.Format);
 		framebufferProperties.mAllowRenderTarget = true;
 		framebufferProperties.mType = SR_ResourceType::Texture2D;
-		mBackbufferResources[i].mResource = new SR_TextureResource_DX12(framebufferProperties, res);
-		mBackbufferResources[i].mResource->mResourceTrackingDX12.mD3D12CurrentState = D3D12_RESOURCE_STATE_PRESENT;
+		backbufferResource.mResource = new SR_TextureResource_DX12(framebufferProperties, res);
+		backbufferResource.mResource->mResourceTrackingDX12.mD3D12CurrentState = D3D12_RESOURCE_STATE_PRESENT;
 
 		SR_TextureProperties texProperties(framebufferProperties.mFormat, SR_TextureBindFlag_Texture | SR_TextureBindFlag_RenderTarget);
-		mBackbufferResources[i].mTexture = SR_RenderDevice_DX12::gInstance->CreateTexture(texProperties, mBackbufferResources[i].mResource);
+		backbufferResource.mTexture = SR_RenderDevice_DX12::gInstance->CreateTexture(texProperties, backbufferResource.mResource);
+
+		backbufferResource.mFenceResource = SR_RenderDevice_DX12::gInstance->CreateFenceResource();
 	}
 
 	mCurrentResource = &mBackbufferResources[mCurrentIndex];

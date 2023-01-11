@@ -12,6 +12,7 @@
 #include "SR_SwapChain.h"
 #include "SR_DeviceCapabilities.h"
 #include "SR_ShaderCompiler.h"
+#include "SR_ContextThread.h"
 
 class SR_RenderDevice
 {
@@ -25,6 +26,13 @@ public:
     void EndFrame();
     void Present();
 
+    SC_Ref<SC_Event> PostRenderTask(const SR_CommandListType& aType, std::function<void()> aTask);
+    SC_Ref<SC_Event> PostGraphicsTask(std::function<void()> aTask);
+    SC_Ref<SC_Event> PostComputeTask(std::function<void()> aTask);
+    SC_Ref<SC_Event> PostCopyTask(std::function<void()> aTask);
+
+    virtual SC_Ref<SR_CommandList> CreateCommandList(const SR_CommandListType& aType);
+
 	virtual SC_Ref<SR_TextureResource> CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData = nullptr, uint32 aDataCount = 0);
 	virtual SC_Ref<SR_Texture> CreateTexture(const SR_TextureProperties& aTextureProperties, const SC_Ref<SR_TextureResource>& aResource);
 
@@ -33,6 +41,8 @@ public:
 
     virtual SC_Ref<SR_Shader> CreateShader(const SR_CreateShaderProperties& aCreateShaderProperties);
     virtual SC_Ref<SR_PipelineState> CreatePipelineState();
+
+    virtual SC_Ref<SR_FenceResource> CreateFenceResource();
 
 	virtual SR_DescriptorHeap* GetDescriptorHeap(const SR_DescriptorHeapType& aDescriptorHeapType) const;
 
@@ -67,6 +77,8 @@ protected:
 
 	SC_Ref<SR_CommandQueue> mCommandQueues[static_cast<uint32>(SR_CommandListType::COUNT)];
     SC_StaticArray<SC_Ref<SR_RootSignature>, SR_RootSignatureType_COUNT> mRootSignatures;
+
+    SC_StaticArray<SR_ContextThread*, static_cast<uint32>(SR_CommandListType::COUNT)> mContextThreads;
 
     bool mEnableDebugMode;
     bool mEnableBreakOnError;

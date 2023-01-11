@@ -16,7 +16,7 @@ public:
     HWND GetHandle() const;
 
 private:
-    void PostMessageToMainThread(uint32 aMsg, WPARAM aWPARAM, LPARAM aLPARAM);
+    void PostMessageToMainThread(uint32 aMsg, WPARAM wParam, LPARAM lParam);
 
 	HWND mWindowHandle;
 	SC_Ref<SR_SwapChain> mSwapChain;

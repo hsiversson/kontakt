@@ -19,7 +19,7 @@ public:
 	virtual ~Gfx_RenderQueue();
 
 	void Prepare(Gfx_ViewRenderData& aPrepareData);
-	void Render(SR_CommandList* aCmdList) const;
+	void Render(SR_RenderContext* aContext) const;
 	void Clear();
 
 	SC_Mutex& GetMutex();

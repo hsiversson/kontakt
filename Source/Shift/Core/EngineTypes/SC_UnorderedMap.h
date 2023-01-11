@@ -1,10 +1,15 @@
 //ProjectFilter(Containers)
 #pragma once
 
-template<class T>
-class SC_UnorderedMap
-{
-public:
+#include <unordered_map>
 
-private:
-};
+template<class KeyType, class ItemType>
+using SC_UnorderedMap = std::unordered_map<KeyType, ItemType>;
+
+//template<class T>
+//class SC_UnorderedMap
+//{
+//public:
+//
+//private:
+//};

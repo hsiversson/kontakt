@@ -22,7 +22,6 @@ SR_PipelineState_DX12::~SR_PipelineState_DX12()
 
 bool SR_PipelineState_DX12::Init(const SR_PipelineStateProperties& aProperties)
 {
-
 	for (uint32 i = 0; i < SR_ShaderType_COUNT; ++i)
 	{
 		const SR_CreateShaderProperties& createShaderProps = aProperties.mCreateShaderProperties[i];
@@ -32,17 +31,17 @@ bool SR_PipelineState_DX12::Init(const SR_PipelineStateProperties& aProperties)
 	//for (uint32 i = 0; i < static_cast<uint32>(SR_ShaderType::COUNT); ++i)
 	//	mShaderMetaDatas[i] = aProperties.mShaderMetaDatas[i];
 
-//	if (aProperties.mCreateShaderProperties[static_cast<uint32>(SR_ShaderType::Compute)].mSize)
-//		return InitAsComputeShader(aProperties);
-//#if SR_ENABLE_RAYTRACING
-//	else if (aProperties.ms[static_cast<uint32>(SR_ShaderType::Raytracing)].mSize)
-//		return InitAsRaytracingShader(aProperties);
-//#endif
-//#if SR_ENABLE_MESH_SHADERS
-//	else if (SR_RenderDevice::gInstance->GetSupportCaps().mEnableMeshShaders && aProperties.mShaderByteCodes[static_cast<uint32>(SR_ShaderType::Mesh)].mSize)
-//		return InitAsMeshShader(aProperties);
-//#endif
-//	else
+	if (mShaders[static_cast<uint32>(SR_ShaderType::Compute)])
+		return InitAsComputeShader(aProperties);
+#if SR_ENABLE_RAYTRACING
+	else if (mShaders[static_cast<uint32>(SR_ShaderType::Raytracing)])
+		return InitAsRaytracingShader(aProperties);
+#endif
+#if SR_ENABLE_MESH_SHADERS
+	else if (SR_RenderDevice::gInstance->mCaps.mMeshShaders && mShaders[static_cast<uint32>(SR_ShaderType::Mesh)])
+		return InitAsMeshShader(aProperties);
+#endif
+	else
 		return InitDefault(aProperties);
 }
 
@@ -141,16 +140,70 @@ bool SR_PipelineState_DX12::InitDefault(const SR_PipelineStateProperties& aPrope
 	desc.pPipelineStateSubobjectStream = &streamDesc;
 	desc.SizeInBytes = sizeof(streamDesc);
 
-	HRESULT result = E_FAIL;
-	result = SR_RenderDevice_DX12::gInstance->GetD3D12Device5()->CreatePipelineState(&desc, IID_PPV_ARGS(&mD3D12PipelineState));
-
+	HRESULT result = SR_RenderDevice_DX12::gInstance->GetD3D12Device5()->CreatePipelineState(&desc, IID_PPV_ARGS(&mD3D12PipelineState));
 	return SR_VerifyHRESULT(result);
 }
 
-bool SR_PipelineState_DX12::InitAsMeshShader(const SR_PipelineStateProperties& /*aProperties*/)
+#if SR_ENABLE_MESH_SHADERS
+bool SR_PipelineState_DX12::InitAsMeshShader(const SR_PipelineStateProperties& aProperties)
 {
-	return false;
+	uint32 asIndex = static_cast<uint32>(SR_ShaderType::Amplification);
+	uint32 msIndex = static_cast<uint32>(SR_ShaderType::Mesh);
+	uint32 psIndex = static_cast<uint32>(SR_ShaderType::Pixel);
+
+	bool hasAmplificationShader = mShaders[asIndex] != nullptr;
+
+	SR_RootSignature* rootSignature = (aProperties.mRootSignature) ? aProperties.mRootSignature.Get() : SR_RenderDevice::gInstance->GetRootSignature(SR_RootSignatureType::GraphicsMS);
+	SR_RootSignature_DX12* rootSignatureDX12 = static_cast<SR_RootSignature_DX12*>(rootSignature);
+
+	HRESULT result = E_FAIL;
+	if (hasAmplificationShader)
+	{
+		SR_MeshShaderPipelineStreamDesc_WithAS streamDesc;
+		streamDesc.mRootSignature.mPtr = rootSignatureDX12->GetD3D12RootSignature();
+
+		streamDesc.mAS.mByteCode = { mShaders[asIndex]->GetByteCode().mData, mShaders[asIndex]->GetByteCode().mSize };
+		streamDesc.mMS.mByteCode = { mShaders[msIndex]->GetByteCode().mData, mShaders[msIndex]->GetByteCode().mSize };
+		streamDesc.mPS.mByteCode = { mShaders[psIndex]->GetByteCode().mData, mShaders[psIndex]->GetByteCode().mSize };
+
+		streamDesc.mRTVFormats.Init(aProperties.mRenderTargetFormats);
+		streamDesc.mDSVFormat.Init(aProperties.mRenderTargetFormats.mDepthFormat);
+		streamDesc.mRasterizerState.Init(aProperties.mRasterizerProperties);
+		streamDesc.mBlendState.Init(aProperties.mBlendStateProperties);
+		streamDesc.mDepthStencilState.Init(aProperties.mDepthStencilProperties);
+
+		D3D12_PIPELINE_STATE_STREAM_DESC desc = {};
+		desc.pPipelineStateSubobjectStream = &streamDesc;
+		desc.SizeInBytes = sizeof(streamDesc);
+
+		result = SR_RenderDevice_DX12::gInstance->GetD3D12Device5()->CreatePipelineState(&desc, IID_PPV_ARGS(&mD3D12PipelineState));
+	}
+	else
+	{
+		SR_MeshShaderPipelineStreamDesc streamDesc;
+		streamDesc.mRootSignature.mPtr = rootSignatureDX12->GetD3D12RootSignature();
+
+		streamDesc.mMS.mByteCode = { mShaders[msIndex]->GetByteCode().mData, mShaders[msIndex]->GetByteCode().mSize };
+		streamDesc.mPS.mByteCode = { mShaders[psIndex]->GetByteCode().mData, mShaders[psIndex]->GetByteCode().mSize };
+
+		streamDesc.mRTVFormats.Init(aProperties.mRenderTargetFormats);
+		streamDesc.mDSVFormat.Init(aProperties.mRenderTargetFormats.mDepthFormat);
+		streamDesc.mRasterizerState.Init(aProperties.mRasterizerProperties);
+		streamDesc.mBlendState.Init(aProperties.mBlendStateProperties);
+		streamDesc.mDepthStencilState.Init(aProperties.mDepthStencilProperties);
+
+		D3D12_PIPELINE_STATE_STREAM_DESC desc = {};
+		desc.pPipelineStateSubobjectStream = &streamDesc;
+		desc.SizeInBytes = sizeof(streamDesc);
+
+		result = SR_RenderDevice_DX12::gInstance->GetD3D12Device5()->CreatePipelineState(&desc, IID_PPV_ARGS(&mD3D12PipelineState));
+	}
+
+	mRootSignature = rootSignature;
+	mIsMeshShader = true;
+	return SR_VerifyHRESULT(result);
 }
+#endif //SR_ENABLE_MESH_SHADERS
 
 bool SR_PipelineState_DX12::InitAsComputeShader(const SR_PipelineStateProperties& aProperties)
 {
@@ -172,6 +225,7 @@ bool SR_PipelineState_DX12::InitAsComputeShader(const SR_PipelineStateProperties
 	return SR_VerifyHRESULT(result);
 }
 
+#if SR_ENABLE_RAYTRACING
 bool SR_PipelineState_DX12::InitAsRaytracingShader(const SR_PipelineStateProperties& /*aProperties*/)
 {
 	return false;
@@ -180,4 +234,6 @@ bool SR_PipelineState_DX12::InitAsRaytracingShader(const SR_PipelineStatePropert
 void SR_PipelineState_DX12::CreateRaytracingShaderTable(const SR_PipelineStateProperties& /*aProperties*/)
 {
 }
+#endif //SR_ENABLE_RAYTRACING
+
 #endif

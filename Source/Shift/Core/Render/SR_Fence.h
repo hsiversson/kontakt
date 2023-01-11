@@ -12,6 +12,7 @@ public:
 	virtual bool IsPending(uint64 /*aValue*/) { return false; }
 	virtual bool Wait(uint64 /*aValue*/, bool /*aBlock*/ = true) { return true; }
 	virtual uint64 GetNextValue() = 0;
+	virtual uint64 GetLatestValue() = 0;
 };
 
 struct SR_Fence

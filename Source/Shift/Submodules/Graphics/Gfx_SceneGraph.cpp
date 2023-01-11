@@ -61,7 +61,7 @@ void Gfx_SceneGraph::PrepareView(Gfx_View* aView)
 			prepareData.mQueues.mDepthQueue.Prepare(prepareData);
 			prepareData.mQueues.mDepthQueue_MotionVectors.Prepare(prepareData);
 			prepareData.mQueues.mOpaqueQueue.Prepare(prepareData);
-			prepareData.mQueues.mTransparentQueue.Prepare(prepareData);
+			prepareData.mQueues.mTranslucentQueue.Prepare(prepareData);
 		}
 	}
 
@@ -134,6 +134,8 @@ void Gfx_SceneGraph::RemoveMeshInstance(Gfx_MeshInstance* aMeshInstance)
 
 void Gfx_SceneGraph::AddLight(Gfx_Light* aLight)
 {
+	SC_ASSERT(aLight->GetType() != Gfx_LightType::Directional, "Directional Lights do not belong here.");
+
 	Action action;
 	action.mActionType = ActionType::Add;
 	action.mObjectType = ObjectType::Light;
@@ -224,7 +226,7 @@ void Gfx_SceneGraph::CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uin
 	SC_Array<Gfx_RenderQueueItem> depthQueueItems(aNumItems);
 	SC_Array<Gfx_RenderQueueItem> depthMVQueueItems(aNumItems);
 	SC_Array<Gfx_RenderQueueItem> opaqueQueueItems(aNumItems);
-	SC_Array<Gfx_RenderQueueItem> transparentQueueItems(aNumItems);
+	SC_Array<Gfx_RenderQueueItem> translucentQueueItems(aNumItems);
 	for (uint32 i = 0; i < aNumItems; ++i)
 	{
 		const Gfx_MeshInstance* meshInstance = mMeshInstances[i + aStartOffset];
@@ -244,16 +246,17 @@ void Gfx_SceneGraph::CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uin
 		// TODO: More fine-grained culling like occlusion culling here
 
 		const Gfx_Mesh* mesh = meshInstance->GetMesh();
-		//const Gfx_Material* material = meshInstance->GetMaterial();
+		const Gfx_MaterialInstance* materialInstance = meshInstance->GetMaterialInstance();
+		const Gfx_Material* material = materialInstance->GetMaterial();
 
 		const bool writeDepth = true;
-		const bool transparent = false;// material->IsTransparent();
-		const bool outputMotionVectors = false;// material->OutputMotionVectors();
+		const Gfx_MaterialBlendMode& blendMode = material->GetBlendMode();
+		const bool outputMotionVectors = material->WriteMotionVectors();
 
 		SR_PipelineState* depthPipelineState = nullptr;// material->GetPipelineState(mesh->GetVertexLayout(), Depth);
 		SR_PipelineState* colorPipelineState = nullptr;// material->GetPipelineState(mesh->GetVertexLayout(), Color);
 
-		if (writeDepth && !depthPipelineState)
+		if (blendMode == Gfx_MaterialBlendMode::Opaque && !depthPipelineState)
 			continue;
 
 		if (!colorPipelineState)
@@ -280,7 +283,7 @@ void Gfx_SceneGraph::CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uin
 
 		//renderQueueItem.mTransform = meshInstance->GetTransform();
 		//renderQueueItem.mPrevTransform = meshInstance->GetPrevTransform();
-		//renderQueueItem.mMaterialIndex = material->GetMaterialIndex();
+		//renderQueueItem.mMaterialIndex = materialInstance->GetMaterialIndex();
 		renderQueueItem.mSortDistance = distanceToCamera;
 
 		if (writeDepth)
@@ -293,8 +296,8 @@ void Gfx_SceneGraph::CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uin
 		}
 
 		renderQueueItem.mPipelineState = colorPipelineState;
-		if (transparent)
-			transparentQueueItems.Add(renderQueueItem);
+		if (blendMode == Gfx_MaterialBlendMode::Translucent)
+			translucentQueueItems.Add(renderQueueItem);
 		else
 			opaqueQueueItems.Add(renderQueueItem);
 	}
@@ -312,8 +315,8 @@ void Gfx_SceneGraph::CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uin
 		prepareData.mQueues.mOpaqueQueue.AddItems(opaqueQueueItems.GetBuffer(), opaqueQueueItems.Count());
 	}
 	{
-		SC_MutexLock lock(prepareData.mQueues.mTransparentQueue.GetMutex());
-		prepareData.mQueues.mTransparentQueue.AddItems(transparentQueueItems.GetBuffer(), transparentQueueItems.Count());
+		SC_MutexLock lock(prepareData.mQueues.mTranslucentQueue.GetMutex());
+		prepareData.mQueues.mTranslucentQueue.AddItems(translucentQueueItems.GetBuffer(), translucentQueueItems.Count());
 	}
 }
 
@@ -327,13 +330,25 @@ void Gfx_SceneGraph::CullLights_Stage1(Gfx_View* aView, uint32 aStartOffset, uin
 	for (uint32 i = 0; i < aNumItems; ++i)
 	{
 		const Gfx_Light* light = mLights[i + aStartOffset];
+		const Gfx_PointLight* pl = static_cast<const Gfx_PointLight*>(light);
 		if (!light)
 			continue;
 
-		if (!frustum.Intersects(light->GetBoundingSphere()))
+		if (!frustum.Intersects(pl->GetBoundingSphere()))
 			continue;
 
+		Gfx_LocalLightRenderData& visibleLight = visibleLights.Add();
+		light->GetGpuData(visibleLight.mGpuData);
 
+		// Do visibility culling for shadow casters.
+		//if (light->GetType() == Gfx_LightType::Point)
+		//{
+		//
+		//}
+		//else if (light->GetType() == Gfx_LightType::Spot)
+		//{
+		//
+		//}
 	}
 }
 

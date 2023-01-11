@@ -77,7 +77,7 @@ private:
 	void MoveInternal(Gfx_MeshInstance* aMeshInstance);
 	void MoveInternal(Gfx_Light* aLight);
 
-	void CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uint32 aNumItems);
+	void CullMeshes_Stage1(Gfx_View* aView, uint32 aStartOffset, uint32 aNumItems); // Tests agains camera frustum, outputs all visible meshes.
 
 	void CullLights_Stage1(Gfx_View* aView, uint32 aStartOffset, uint32 aNumItems); // Tests against camera frustum, outputs all visible lights
 	void CullLights_Stage2(Gfx_View* aView, uint32 aTileIndex); // Tests agains individual macro tiles, outputs lights visible for specific tile.

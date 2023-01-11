@@ -61,3 +61,17 @@ SF_Manager* SF_Manager::Get()
 	return gInstance;
 }
 
+#if IS_WINDOWS_PLATFORM
+void SF_Manager::WindowProc(HWND /*aHwnd*/, UINT aMsg, WPARAM /*wParam*/, LPARAM /*lParam*/)
+{
+	if (!gInstance)
+		return;
+
+	switch (aMsg)
+	{
+	case WM_MOUSEMOVE:
+		break;
+	}
+}
+#endif //IS_WINDOWS_PLATFORM
+

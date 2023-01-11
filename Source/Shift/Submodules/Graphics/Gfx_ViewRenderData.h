@@ -3,19 +3,18 @@
 
 #include "Gfx_RenderQueue.h"
 #include "Gfx_Light.h"
+#include "Gfx_Camera.h"
 
 struct Gfx_DirectionalLightRenderData
 {
 	//Gfx_RenderQueue_ByState mShadowCastersQueue;
 	Gfx_DirectionalLightGpuData mGpuData;
-	bool mCastShadow;
 };
 
 struct Gfx_LocalLightRenderData
 {
 	//Gfx_RenderQueue_ByState mShadowCastersQueue;
 	Gfx_LocalLightGpuData mGpuData;
-	bool mCastShadow;
 };
 
 struct Gfx_ViewRenderQueues
@@ -25,13 +24,13 @@ struct Gfx_ViewRenderQueues
 		mDepthQueue.Clear();
 		mDepthQueue_MotionVectors.Clear();
 		mOpaqueQueue.Clear();
-		mTransparentQueue.Clear();
+		mTranslucentQueue.Clear();
 	}
 
 	Gfx_RenderQueue_ByState mDepthQueue;
 	Gfx_RenderQueue_ByState mDepthQueue_MotionVectors;
 	Gfx_RenderQueue_ByState mOpaqueQueue;
-	Gfx_RenderQueue_FarFirst mTransparentQueue;
+	Gfx_RenderQueue_FarFirst mTranslucentQueue;
 };
 
 struct Gfx_ViewRenderData
@@ -47,6 +46,8 @@ struct Gfx_ViewRenderData
 		mDirectionalLights.RemoveAll();
 		mVisibleLocalLights.RemoveAll();
 	}
+
+	SR_Rect mViewport;
 
 	Gfx_ViewRenderQueues mQueues;
 

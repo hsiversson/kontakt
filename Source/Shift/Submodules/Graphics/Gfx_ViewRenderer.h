@@ -29,10 +29,10 @@ public:
 	void Render(Gfx_View* aView);
 
 private:
-	void RenderDepth();
-	void ComputeLightGrid();
-	void ComputeIndirectLighting();
-	void RenderColor();
-	void RenderPostEffects();
+	void RenderDepth(Gfx_View* aView);
+	void ComputeLightGrid(Gfx_View* aView);
+	void ComputeIndirectLighting(Gfx_View* aView);
+	void RenderColor(Gfx_View* aView);
+	void RenderPostEffects(Gfx_View* aView);
 };
 

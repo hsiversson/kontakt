@@ -13,6 +13,7 @@
 #include "SR_DirectXShaderCompiler.h"
 #include "SR_PipelineState_DX12.h"
 #include "SR_RootSignature_DX12.h"
+#include "SR_Fence_DX12.h"
 
 #if IS_PC_PLATFORM
 	#if SR_ENABLE_NVAPI
@@ -23,7 +24,7 @@
 	#endif
 #endif
 
-extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 606; }
+extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 608; }
 extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = "./"; }
 
 SR_RenderDevice_DX12* SR_RenderDevice_DX12::gInstance = nullptr;
@@ -133,6 +134,15 @@ bool SR_RenderDevice_DX12::Init()
 	return PostInit();
 }
 
+SC_Ref<SR_CommandList> SR_RenderDevice_DX12::CreateCommandList(const SR_CommandListType& aType)
+{
+	SC_Ref<SR_CommandList_DX12> newCmdList = new SR_CommandList_DX12(aType);
+	if (!newCmdList->Init())
+		return nullptr;
+
+	return newCmdList;
+}
+
 SC_Ref<SR_TextureResource> SR_RenderDevice_DX12::CreateTextureResource(const SR_TextureResourceProperties& aTextureResourceProperties, const SR_PixelData* aInitialData, uint32 aDataCount)
 {
 	SC_Ref<SR_TextureResource_DX12> newTextureResource = new SR_TextureResource_DX12(aTextureResourceProperties);
@@ -200,6 +210,16 @@ SC_Ref<SR_PipelineState> SR_RenderDevice_DX12::CreatePipelineState()
 		return nullptr;
 
 	return pso;
+}
+
+SC_Ref<SR_FenceResource> SR_RenderDevice_DX12::CreateFenceResource()
+{
+	SC_Ref<SR_FenceResource_DX12> fenceResource = new SR_FenceResource_DX12();
+
+	if (!fenceResource->Init())
+		return nullptr;
+
+	return fenceResource;
 }
 
 SR_DescriptorHeap* SR_RenderDevice_DX12::GetDescriptorHeap(const SR_DescriptorHeapType& aDescriptorHeapType) const

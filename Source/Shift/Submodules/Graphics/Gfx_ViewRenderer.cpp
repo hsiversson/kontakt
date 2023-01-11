@@ -22,16 +22,24 @@ void Gfx_ViewRenderer::Prepare(Gfx_View* /*aView*/)
 {
 }
 
-void Gfx_ViewRenderer::Render(Gfx_View* /*aView*/)
+void Gfx_ViewRenderer::Render(Gfx_View* aView)
 {
-	SR_RenderContext* ctx = SR_RenderContext::GetCurrent();
+	SR_RenderDevice::gInstance->PostGraphicsTask(std::bind(&Gfx_ViewRenderer::RenderColor, this, aView));
+
+
+
 	//const Gfx_ViewRenderData& renderData = aView->GetRenderData();
 
+	//PostGraphicsTask();
+	//PostComputeTask();
+	//PostCopyTask();
 
-	SR_Texture* rtv = SR_RenderDevice::gInstance->GetCurrentSwapChain()->GetCurrentRenderTarget();
-	ctx->ResourceStateTransition(SR_ResourceState_RenderTarget, rtv->GetResource());
-	ctx->ClearRenderTarget(rtv, { 1.0f, 0.0f, 0.0f, 0.0f });
-	ctx->ResourceStateTransition(SR_ResourceState_Present, rtv->GetResource());
+
+	//SR_RenderContext* ctx = SR_RenderContext::GetCurrent();
+	//SR_Texture* rtv = SR_RenderDevice::gInstance->GetCurrentSwapChain()->GetCurrentRenderTarget();
+	//ctx->ResourceStateTransition(SR_ResourceState_RenderTarget, rtv->GetResource());
+	//ctx->ClearRenderTarget(rtv, { 1.0f, 0.0f, 0.0f, 0.0f });
+	//ctx->ResourceStateTransition(SR_ResourceState_Present, rtv->GetResource());
 
 	//RenderDepth();
 	//RenderColor();
@@ -39,7 +47,7 @@ void Gfx_ViewRenderer::Render(Gfx_View* /*aView*/)
 
 }
 
-void Gfx_ViewRenderer::RenderDepth()
+void Gfx_ViewRenderer::RenderDepth(Gfx_View* /*aView*/)
 {
 	//SR_RenderContext* ctx /*= SR_RenderContext::GetCurrent()*/;
 
@@ -47,22 +55,42 @@ void Gfx_ViewRenderer::RenderDepth()
 
 }
 
-void Gfx_ViewRenderer::ComputeLightGrid()
+void Gfx_ViewRenderer::ComputeLightGrid(Gfx_View* /*aView*/)
 {
 
 }
 
-void Gfx_ViewRenderer::ComputeIndirectLighting()
+void Gfx_ViewRenderer::ComputeIndirectLighting(Gfx_View* /*aView*/)
 {
 
 }
 
-void Gfx_ViewRenderer::RenderColor()
+void Gfx_ViewRenderer::RenderColor(Gfx_View* /*aView*/)
 {
+	//const Gfx_ViewRenderData& renderData = aView->GetRenderData();
+	//const Gfx_ViewRenderQueues& renderQueues = renderData.mQueues;
+	//
+	//SR_Rect viewRect;
+	//
+	//SR_RenderContext* ctx = SR_RenderContext::GetCurrent();
+	//
+	//SR_Texture* colorTarget = nullptr;
+	//SR_Texture* depthStencil = nullptr;
+	//ctx->SetRenderTarget(colorTarget, depthStencil);
+	//
+	//ctx->SetViewport(viewRect);
+	//ctx->SetScissorRect(viewRect);
+	//
+	//renderQueues.mOpaqueQueue.Render(ctx);
 
+	SR_RenderContext* ctx = SR_RenderContext::GetCurrent();
+	SR_Texture* rtv = SR_RenderDevice::gInstance->GetCurrentSwapChain()->GetCurrentRenderTarget();
+	ctx->ResourceStateTransition(SR_ResourceState_RenderTarget, rtv->GetResource());
+	ctx->ClearRenderTarget(rtv, { 1.0f, 0.0f, 0.0f, 0.0f });
+	ctx->ResourceStateTransition(SR_ResourceState_Present, rtv->GetResource());
 }
 
-void Gfx_ViewRenderer::RenderPostEffects()
+void Gfx_ViewRenderer::RenderPostEffects(Gfx_View* /*aView*/)
 {
 
 }

@@ -1,10 +1,11 @@
 //ProjectFilter(Windows)
 #include "AppFramework_Precompiled.h"
 #include "SAF_Window_Win64.h"
+#include "SF_Manager.h"
 
 #if IS_WINDOWS_PLATFORM
 
-static LRESULT CALLBACK	SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPARAM);
+static LRESULT CALLBACK	SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM wParam, LPARAM lParam);
 
 static constexpr const char* gWindowClassName = "ShiftEngineWindowClassId";
 static bool RegisterWindowClass()
@@ -91,20 +92,49 @@ HWND SAF_Window_Win64::GetHandle() const
 //	::PostThreadMessage(SC_Thread::GetMainThreadId(), aMsg, aWPARAM, aLPARAM);
 //}
 
-LRESULT CALLBACK SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM aWPARAM, LPARAM aLPARAM)
+LRESULT CALLBACK SAF_WndProc(HWND aHwnd, UINT aMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch(aMsg)
 	{
 	case WM_ENTERSIZEMOVE:
+		// Start Move
 		return 0;
 	case WM_EXITSIZEMOVE:
+		// End Move
 		return 0;
+
+	case WM_WINDOWPOSCHANGED:
+		// HandlePositionChangedMessage
+		return 0;
+
+	case WM_WINDOWPOSCHANGING:
+		//HandlePositionChangingMessage
+		break;
+
+	case WM_SETCURSOR:
+		if (LOWORD(lParam) == HTCLIENT)
+		{
+			//::SetCursor(cursor);
+			return 1;
+		}
+		break;
+
 	case WM_CLOSE:
-		PostQuitMessage(0);
+
+		//if (isMainWindow)
+			PostQuitMessage(0);
+		//else
+			//destroy child window
 		return 0;
+
 	default:
-		return DefWindowProc(aHwnd, aMsg, aWPARAM, aLPARAM);
+		break;
 	}
+
+	if (SF_Manager* facadeManager = SF_Manager::Get())
+		facadeManager->WindowProc(aHwnd, aMsg, wParam, lParam);
+
+	return DefWindowProc(aHwnd, aMsg, wParam, lParam);
 }
 
 #endif

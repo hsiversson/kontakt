@@ -19,6 +19,7 @@ public:
 	bool IsPending(uint64 aValue) override;
 	bool Wait(uint64 aValue, bool aBlock = true) override;
 	uint64 GetNextValue() override;
+	uint64 GetLatestValue() override;
 
 	ID3D12Fence* GetD3D12Fence() const;
 

@@ -2,8 +2,21 @@
 #include "Render_Precompiled.h"
 #include "SR_VertexLayout.h"
 
-SR_VertexLayout::SR_VertexLayout()
+bool SR_VertexLayout::operator==(const SR_VertexLayout& aOther) const
 {
+	if (mAttributes.Count() != aOther.mAttributes.Count())
+		return false;
+
+	for (uint32 i = 0; i < mAttributes.Count(); ++i)
+	{
+		if (mAttributes[i].mAttributeId != aOther.mAttributes[i].mAttributeId)
+			return false;
+
+		if (mAttributes[i].mAttributeIndex != aOther.mAttributes[i].mAttributeIndex)
+			return false;
+	}
+
+	return true;
 }
 
 uint32 SR_VertexLayout::GetVertexStrideSize() const
@@ -67,21 +80,4 @@ uint32 SR_VertexLayout::GetAttributeByteOffset(const SR_VertexAttribute& aAttrib
 		offset += attributeBytes;
 	}
 	return offset;
-}
-
-bool SR_VertexLayout::operator==(const SR_VertexLayout& aOther) const
-{
-	if (mAttributes.Count() != aOther.mAttributes.Count())
-		return false;
-
-	for (uint32 i = 0; i < mAttributes.Count(); ++i)
-	{
-		if (mAttributes[i].mAttributeId != aOther.mAttributes[i].mAttributeId)
-			return false;
-
-		if (mAttributes[i].mAttributeIndex != aOther.mAttributes[i].mAttributeIndex)
-			return false;
-	}
-
-	return true;
 }

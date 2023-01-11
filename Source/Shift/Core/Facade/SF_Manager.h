@@ -19,6 +19,10 @@ public:
 	static void Destroy();
 	static SF_Manager* Get();
 
+#if IS_WINDOWS_PLATFORM
+	void WindowProc(HWND aHwnd, UINT aMsg, WPARAM wParam, LPARAM lParam);
+#endif //IS_WINDOWS_PLATFORM
+
 private:
 	SC_Ptr<SF_BaseRenderer> mRenderer;
 	SC_Ptr<SF_InputManager> mInputManager;

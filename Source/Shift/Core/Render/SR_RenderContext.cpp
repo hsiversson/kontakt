@@ -19,6 +19,7 @@ SR_RenderContext::~SR_RenderContext()
 void SR_RenderContext::BeginTask(SR_CommandList* aCmdList)
 {
 	mCurrentCmdList = aCmdList;
+	mCurrentCmdList->Open();
 }
 
 void SR_RenderContext::EndTask(bool aSubmitCmdList)
@@ -31,9 +32,13 @@ void SR_RenderContext::EndTask(bool aSubmitCmdList)
 
 void SR_RenderContext::SubmitCommandList()
 {
-	//SR_CommandQueue* cmdQueue = SR_RenderDevice::gInstance->GetCommandQueue(mCurrentCmdList->GetType());
+	SR_CommandQueue* cmdQueue = SR_RenderDevice::gInstance->GetCommandQueue(mCurrentCmdList->GetType());
+	mCurrentCmdList->Close();
+	cmdQueue->SubmitCommandList(mCurrentCmdList);
 
-	//cmdQueue->SubmitCommandLists()
+	SR_Fence f = cmdQueue->GetNextFence();
+	cmdQueue->SignalFence(f);
+	cmdQueue->WaitForFence(f);
 }
 
 void SR_RenderContext::Draw(uint32 aVertexCount, uint32 aStartVertex)

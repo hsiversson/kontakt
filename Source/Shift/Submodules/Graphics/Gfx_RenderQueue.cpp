@@ -83,9 +83,8 @@ void Gfx_RenderQueue::Prepare(Gfx_ViewRenderData& /*aPrepareData*/)
 	mIsPrepared = true;
 }
 
-void Gfx_RenderQueue::Render(SR_CommandList* aCmdList) const
+void Gfx_RenderQueue::Render(SR_RenderContext* aContext) const
 {
-
 	uint32 numItemsRemaining = mItems.Count();
 	if (!numItemsRemaining)
 		return;
@@ -130,11 +129,11 @@ void Gfx_RenderQueue::Render(SR_CommandList* aCmdList) const
 					//SR_BufferResource* cb = aCmdList->GetBufferResource(cbOffset, SR_BufferBindFlag_ConstantBuffer, sizeof(drawInfo), &drawInfo, 1);
 					//aCmdList->SetRootConstantBuffer(cb, cbOffset, 0);
 
-					aCmdList->SetPipelineState(item.mPipelineState);
-					aCmdList->SetPrimitiveTopology(SR_PrimitiveTopology::TriangleList);
+					aContext->SetPipelineState(item.mPipelineState);
+					aContext->SetPrimitiveTopology(SR_PrimitiveTopology::TriangleList);
 
 					uint32 groupCount = static_cast<uint32>(ceilf(groupsPerInstance * instanceCount));
-					aCmdList->Dispatch(groupCount, 1, 1);
+					aContext->Dispatch(groupCount, 1, 1);
 				}
 			}
 		}
@@ -154,11 +153,11 @@ void Gfx_RenderQueue::Render(SR_CommandList* aCmdList) const
 				//SR_BufferResource* cb = aCmdList->GetBufferResource(cbOffset, SR_BufferBindFlag_ConstantBuffer, sizeof(constants), &constants, 1);
 				//aCmdList->SetRootConstantBuffer(cb, cbOffset, 0);
 
-				aCmdList->SetVertexBuffer(vertexBuffer);
-				aCmdList->SetIndexBuffer(indexBuffer);
-				aCmdList->SetPipelineState(item.mPipelineState);
-				aCmdList->SetPrimitiveTopology(SR_PrimitiveTopology::TriangleList);
-				aCmdList->DrawIndexedInstanced(indexBuffer->GetProperties().mElementCount, numInstances);
+				aContext->SetVertexBuffer(vertexBuffer);
+				aContext->SetIndexBuffer(indexBuffer);
+				aContext->SetPipelineState(item.mPipelineState);
+				aContext->SetPrimitiveTopology(SR_PrimitiveTopology::TriangleList);
+				aContext->DrawIndexedInstanced(indexBuffer->GetProperties().mElementCount, numInstances);
 			}
 		}
 

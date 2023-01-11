@@ -87,6 +87,12 @@ void SR_CommandQueue_DX12::SignalFence(const SR_Fence& aFence)
 	mD3D12CommandQueue->Signal(mFence->GetD3D12Fence(), aFence.mValue);
 }
 
+void SR_CommandQueue_DX12::SignalFence(uint64 aValue, SR_FenceResource* aResource)
+{
+	SR_FenceResource_DX12* dx12Fence = static_cast<SR_FenceResource_DX12*>(aResource);
+	mD3D12CommandQueue->Signal(dx12Fence->GetD3D12Fence(), aValue);
+}
+
 void SR_CommandQueue_DX12::InsertWait(const SR_Fence& aFence)
 {
 	mD3D12CommandQueue->Wait(mFence->GetD3D12Fence(), aFence.mValue);
